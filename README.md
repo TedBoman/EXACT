@@ -16,6 +16,7 @@
   - [Adding an Anomaly Injection Method](#adding-an-anomaly-injection-method)
   - [Backend API](#backend-api)
   - [Database API](#database-api)
+- [Troubleshooting](#-troubleshooting)
 - [License](#-license)
 - [Authors](#-authors)
 
@@ -54,7 +55,7 @@ The system includes a set of pre-defined anomaly detection algorithms, XAI metho
     DATABASE_USER=your_db_user
     DATABASE_PASSWORD=your_db_password
     DATABASE_NAME=your_db_name
-    DATABASE_HOST=timescaledb # Service name in docker-compose
+    DATABASE_HOST=host.docker.internal # Bridges the host localhost to the containers
     DATABASE_PORT=5432 # Default PostgreSQL port
     FRONTEND_PORT=8050 # Or your desired frontend port
     BACKEND_PORT=your_backend_port
@@ -420,6 +421,35 @@ The system's backend functionalities are exposed through an API defined in `EXAC
 ### Database API
 
 EXACT uses a database interface defined in `EXACT/Backend/Simulator/DBAPI/db_interface.py` (the version in `EXACT/Database/db_interface.py` appears to be an older or alternative version, while `EXACT/Backend/Simulator/DBAPI/db_interface.py` is more aligned with the simulator's usage) and implemented for TimescaleDB in `EXACT/Database/timescaledb_api.py`. This modular design allows for potential adaptation to other time-series databases by implementing the `DBInterface`. The interface defines methods for creating tables, inserting data, reading data, dropping tables, and checking table existence.
+
+## 🔍 Troubleshooting
+
+* **Docker Build/Compose Failures:**
+    * Ensure Docker Desktop (or Docker daemon) is running.
+    * Check for port conflicts (e.g., if `FRONTEND_PORT` or `DATABASE_PORT` are already in use). Modify your `.env` if necessary.
+    * Verify internet connectivity for pulling base images.
+    * Look for specific error messages in the Docker build output.
+* **Container Not Starting:**
+    * Use `docker ps -a` to see the status of containers.
+    * Check container logs: `docker logs <container_name>` (e.g., `docker logs Backend`, `docker logs Frontend`, `docker logs TSdatabase`).
+    * Ensure `.env` file is correctly configured and present in the `Docker` directory.
+* **Frontend Not Connecting to Backend:**
+    * Verify `BACKEND_HOST` and `BACKEND_PORT` are correctly set in the frontend's environment (usually managed by `docker-compose.yml` linking or environment variables passed to the frontend container).
+    * Check backend container logs for errors during startup or request handling.
+* **Database Connection Issues (from Backend):**
+    * Ensure the `TSdatabase` container is running.
+    * Verify `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_USER`, `DATABASE_PASSWORD`, `DATABASE_NAME` in the backend's environment (via `.env` and `docker-compose.yml`) match the TimescaleDB container's settings.
+* **XAI Plots Not Appearing:**
+    * Verify the `XAI_PLOT_OUTPUT_PATH` in your `.env` file points to a valid path on your host machine that can be mounted as a volume.
+    * Ensure this volume is correctly mounted in both the `backend` and `dash-frontend` services in `docker-compose.yml`.
+    * Check backend logs for any errors during XAI plot generation or saving.
+    * Check frontend (Dash app) logs and browser developer console for errors related to serving static assets from `/xai-assets/`.
+* **Job Failures:**
+    * The primary source of information will be the backend container logs (`docker logs Backend`). Look for Python tracebacks or error messages related to data processing, model training/detection, or XAI execution.
+    * The "Job Metadata" section on the job results page might show a "Failed" status or incomplete information.
+* **"No displayable XAI results" or "Method subdirectory not found":**
+    * This means the backend either didn't run the XAI method, encountered an error during XAI, or didn't save output files to the expected location (`XAI_PLOT_OUTPUT_PATH/job_name/MethodName/`). Check backend logs.
+
 
 ## 📄 License
 
