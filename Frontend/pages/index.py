@@ -70,7 +70,7 @@ def layout(handler):
         # --- EXACTX Settings panel ---
         html.Div( 
             [ 
-                html.H1("EXACTX", style={
+                html.H1("EXACT", style={
                     "textAlign": "center",
                     "marginBottom": "30px",
                     "color": "#ffffff",

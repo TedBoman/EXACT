@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import List, Optional
 import pandas as pd
 from datetime import datetime
 
@@ -20,7 +21,7 @@ class DBInterface(ABC):
     # First column of name columns[0] is of type TIMESTAMPTZ NOT NULL and the rest are VARCHAR(50)
     # Then two new columns of type BOOLEAN are added to the table, is_anomaly and injected_anomaly
     @abstractmethod
-    def create_table(self, table_name: str, columns: list[str]) -> None:
+    def create_table(self, table_name: str, columns: List[str]) -> Optional[str]:
         pass
     # Inserts data into the table_name table. The data is a pandas DataFrame with matching columns to the table
     @abstractmethod
@@ -28,7 +29,7 @@ class DBInterface(ABC):
         pass
     # Reads each row of data in the table table_name that has a timestamp greater than or equal to time
     @abstractmethod
-    def read_data(self, from_time: datetime, table_name: str, to_timestamp: datetime) -> pd.DataFrame:
+    def read_data(self, from_time: datetime, table_name: str, to_time: datetime=None) -> pd.DataFrame:
         pass
     # Deletes the table_name table along with all its data
     @abstractmethod
@@ -44,5 +45,9 @@ class DBInterface(ABC):
         pass
     # Updates rows of the table that have an anomaly detected
     @abstractmethod
-    def update_anomalies(self, table_name: str, anomalies: pd.DataFrame) -> None:
+    def update_anomalies(self, table_name: str, pk_column_name, anomaly_pk_values) -> None:
+        pass
+    # Lists all tables in the database
+    @abstractmethod
+    def list_all_tables(self) -> None:
         pass
