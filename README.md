@@ -429,6 +429,13 @@ This project is licensed under Creative Commons Attribution 4.0 International. S
 
 * [TedBoman](https://github.com/TedBoman)
 * [TheoGould/SlightlyRoasted](https://github.com/SlightlyRoasted)
-* [MarcusHammarstrom](https://github.com/MarcusHammarstrom)
-* [Liamburberry](https://github.com/Liamburberry)
-* [MaxStrang](https://github.com/MaxStrang)
+
+## 🙏 Acknowledgements
+
+EXACT builds upon the foundational work of the AnomDet tool. We would like to acknowledge the original developers of AnomDet:
+
+* [TedBoman](https://github.com/TedBoman) - AnomDet
+* [SlightlyRoasted](https://github.com/SlightlyRoasted) - AnomDet
+* [MarcusHammarstrom](https://github.com/MarcusHammarstrom) - AnomDet
+* [Liamburberry](https://github.com/Liamburberry) - AnomDet
+* [MaxStrang](https://github.com/MaxStrang) - AnomDet
