@@ -25,7 +25,7 @@
 ### Overview of EXACT
 EXACT (Explainable Anomaly Classification Tool) is an evolution of the AnomDet tool, enhancing its capabilities with robust Explainable AI (XAI) features. While AnomDet focused on providing a framework for evaluating anomaly detection models against various anomaly injections, EXACT extends this by integrating XAI methods to offer insights into why an anomaly is detected. This allows users not only to identify anomalies but also to understand the contributing factors, making the system more transparent and actionable.
 
-The system manages different anomaly detection algorithms and anomaly injection methods, simulating real-time data streams or processing data in batches. It provides a working framework for evaluating pre-defined anomaly detection models, understanding their responses to pre-defined anomaly injections, and explaining the reasoning behind detections. The architecture is designed to be modular, allowing users to easily define and integrate their own detection models, XAI techniques, and injection methods.
+The system manages different anomaly detection algorithms and anomaly injection methods while processing data in batches. It provides a working framework for evaluating pre-defined anomaly detection models, understanding their responses to pre-defined anomaly injections, and explaining the reasoning behind detections. The architecture is designed to be modular, allowing users to easily define and integrate their own detection models, XAI techniques, and injection methods.
 
 Interaction with the system is primarily through a web-based Frontend, with a CLI-tool also available (though its functionality with XAI features may be limited as it's a remnant from the original AnomDet).
 
