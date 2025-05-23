@@ -1,0 +1,7 @@
+.idea
+.VSCodeCounter
+Database/anom_secrets/*
+**.env
+**.pyc
+**__pycache__
+Backend/Datasets/.csv

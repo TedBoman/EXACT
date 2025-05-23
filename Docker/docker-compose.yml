@@ -1,0 +1,57 @@
+services:
+  timescaledb:
+    build: .
+    container_name: TSdatabase
+    ports: 
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    environment: 
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - timescaledb_data:/var/lib/postgresql/data
+    restart: always
+
+  dash-frontend:
+    runtime: nvidia
+    build:
+      context: ../
+      dockerfile: ./Frontend/Dockerfile
+      args:
+        - FRONTEND_PORT=${FRONTEND_PORT}
+    container_name: Frontend
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    depends_on:
+      - backend
+    environment:
+      BACKEND_HOST: ${BACKEND_HOST}
+      BACKEND_PORT: ${BACKEND_PORT}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ${XAI_PLOT_OUTPUT_PATH}:/app/data
+      - datasets:/app/Datasets
+    restart: always
+
+  backend:
+    build:
+      context: ../
+      dockerfile: ./Backend/Dockerfile
+      args:
+        - BACKEND_PORT=${BACKEND_PORT}
+    container_name: Backend
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    depends_on:
+      - timescaledb
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ${XAI_PLOT_OUTPUT_PATH}:/data
+      - datasets:/Datasets
+    restart: always
+  
+volumes:
+  timescaledb_data:
+  datasets:
