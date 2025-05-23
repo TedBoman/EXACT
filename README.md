@@ -439,3 +439,5 @@ EXACT builds upon the foundational work of the AnomDet tool. We would like to ac
 * [MarcusHammarstrom](https://github.com/MarcusHammarstrom) - AnomDet
 * [Liamburberry](https://github.com/Liamburberry) - AnomDet
 * [MaxStrang](https://github.com/MaxStrang) - AnomDet
+- [valens-twiringiyimana](https://github.com/valens-twiringiyimana) - AnomDet
+- [Seemihh](https://github.com/Seemihh) - AnomDet
