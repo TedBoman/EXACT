@@ -1,5 +1,3 @@
-![EXACT Logo](https://github.com/TedBoman/EXACT/blob/main/exact.png?raw=true)
-
 # EXACT - Explainable Anomaly Classification Tool
 
 ## 📑 Table of contents
