@@ -1,4 +1,4 @@
-![EXACT Logo](https://github.com/TedBoman/EXACT/blob/main/logo.png?raw=true)
+![EXACT Logo](https://github.com/TedBoman/EXACT/blob/main/logo.jpg?raw=true)
 
 # EXACT - Explainable Anomaly Classification Tool
 
