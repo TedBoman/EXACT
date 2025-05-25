@@ -45,7 +45,7 @@ The system includes a set of pre-defined anomaly detection algorithms, XAI metho
 2.  Ensure Git is installed.
 3.  Clone the repository:
     ```sh
-    git clone [https://github.com/TedBoman/EXACT.git](https://github.com/TedBoman/EXACT.git)
+    git clone https://github.com/TedBoman/EXACT.git
     ```
 4.  Navigate to the `Docker` directory:
     ```sh
