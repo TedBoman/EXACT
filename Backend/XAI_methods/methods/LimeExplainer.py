@@ -70,7 +70,6 @@ class LimeExplainer(ExplainerMethodAPI):
         if len(self.feature_names_flat) != self._num_flat_features:
             raise RuntimeError(f"Internal Error: Generated {len(self.feature_names_flat)} flat feature names, but expected {self._num_flat_features}.")
 
-
         # --- Define Prediction Function for LIME ---
         # Takes 2D array (n_perturbations, n_flat_features)
         # Returns 1D array (regression) or 2D array (classification probabilities)
@@ -85,19 +84,19 @@ class LimeExplainer(ExplainerMethodAPI):
             except ValueError as e:
                 raise ValueError(f"LIME Reshape Error: Cannot reshape flat data ({data_flat_2d.shape}) to sequence shape ({(num_perturbations,) + self._original_sequence_shape}). Error: {e}") from e
 
-            # Call the *wrapper's* appropriate prediction method
+            # Call the wrapper's appropriate prediction method
             if self.mode == 'classification':
                 if not hasattr(self.model, 'predict_proba'):
-                     warnings.warn("LIME: Classification mode but model wrapper lacks 'predict_proba'. Using 'predict'. Output shape might be incorrect for LIME.", RuntimeWarning)
-                     # Fallback to predict, but LIME expects probabilities
-                     predictions = self.model.predict(data_reshaped_3d)
-                     # Attempt to format as pseudo-probabilities if predict returns single class (0 or 1)
-                     if predictions.ndim == 2 and predictions.shape[1] == 1:
-                          prob_class_1 = predictions.flatten().astype(float)
-                          prob_class_0 = 1.0 - prob_class_1
-                          return np.vstack([prob_class_0, prob_class_1]).T # Shape (n_samples, 2)
-                     else:
-                          raise RuntimeError("LIME needs probabilities from predict_proba for classification, but model only has predict with incompatible output.")
+                    warnings.warn("LIME: Classification mode but model wrapper lacks 'predict_proba'. Using 'predict'. Output shape might be incorrect for LIME.", RuntimeWarning)
+                    # Fallback to predict, but LIME expects probabilities
+                    predictions = self.model.predict(data_reshaped_3d)
+                    # Attempt to format as pseudo-probabilities if predict returns single class (0 or 1)
+                    if predictions.ndim == 2 and predictions.shape[1] == 1:
+                        prob_class_1 = predictions.flatten().astype(float)
+                        prob_class_0 = 1.0 - prob_class_1
+                        return np.vstack([prob_class_0, prob_class_1]).T # Shape (n_samples, 2)
+                    else:
+                        raise RuntimeError("LIME needs probabilities from predict_proba for classification, but model only has predict with incompatible output.")
                 else:
                     # Use predict_proba
                     predictions = self.model.predict_proba(data_reshaped_3d) # Should return (n_samples, n_classes)
@@ -122,10 +121,10 @@ class LimeExplainer(ExplainerMethodAPI):
         # print("Initializing lime.lime_tabular.LimeTabularExplainer...")
         # Extract relevant init kwargs from params
         lime_init_kwargs = {
-             k: v for k, v in params.items()
-             if k in ['kernel_width', 'verbose', 'feature_selection', 'discretize_continuous', 'discretizer', 'sample_around_instance', 'random_state']
-             # Exclude params we handled manually: mode, feature_names, class_names
-             # 'training_data' and 'feature_names' are positional below
+            k: v for k, v in params.items()
+            if k in ['kernel_width', 'verbose', 'feature_selection', 'discretize_continuous', 'discretizer', 'sample_around_instance', 'random_state']
+            # Exclude params we handled manually: mode, feature_names, class_names
+            # 'training_data' and 'feature_names' are positional below
         }
         try:
             self._explainer = lime.lime_tabular.LimeTabularExplainer(
@@ -139,7 +138,6 @@ class LimeExplainer(ExplainerMethodAPI):
         except Exception as e:
             # print(f"Error initializing LimeTabularExplainer: {e}")
             raise RuntimeError("Failed to initialize LIME Tabular Explainer.") from e
-
 
     @property
     def expected_value(self):

@@ -5,10 +5,9 @@ import numpy as np
 from typing import Union, List, Optional
 import datetime # Use this for timedelta consistently
 
-# Assuming ut.parse_duration is the corrected version that returns datetime.timedelta
 from Simulator.DBAPI import utils as ut 
 from Simulator.DBAPI.debug_utils import DebugLogger as dl
-from Simulator.DBAPI.type_classes import AnomalySetting # Assuming this is defined
+from Simulator.DBAPI.type_classes import AnomalySetting
 
 # Import your specific anomaly injection method classes
 from Simulator.AnomalyInjector.InjectionMethods.lowered import LoweredAnomaly
@@ -26,7 +25,7 @@ class TimeSeriesAnomalyInjector:
 
     def inject_anomaly(
         self, 
-        data: pd.DataFrame, # Expecting a DataFrame
+        data: pd.DataFrame,
         # anomaly_settings can be a single setting object when called from BatchImporter per setting
         anomaly_setting_obj: AnomalySetting,
         ) -> pd.DataFrame:

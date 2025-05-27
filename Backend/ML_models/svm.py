@@ -38,10 +38,10 @@ class SVMModel(model_interface.ModelInterface):
             epochs (int): Default number of AE training epochs (default: 10).
             batch_size (int): Default AE training batch size (default: 32).
         """
-        self.scaler = StandardScaler() # Using StandardScaler
+        self.scaler = StandardScaler()
         self.encoder: Optional[Model] = None
         self.autoencoder: Optional[Model] = None
-        self.svm_model: Optional[OneClassSVM] = None # Initialize later
+        self.svm_model: Optional[OneClassSVM] = None
         self.threshold: Optional[float] = None
         self.n_features: Optional[int] = None
 
@@ -49,7 +49,7 @@ class SVMModel(model_interface.ModelInterface):
         self.config = {
             'encoding_dim': kwargs.get('encoding_dim', 10),
             'ae_activation': kwargs.get('ae_activation', 'relu'),
-            'ae_output_activation': kwargs.get('ae_output_activation', 'linear'), # Linear for StandardScaler
+            'ae_output_activation': kwargs.get('ae_output_activation', 'linear'),
             'optimizer_name': kwargs.get('optimizer', 'adam'),
             'learning_rate': kwargs.get('learning_rate', 0.001),
             'loss': kwargs.get('loss', 'mse'),
@@ -84,7 +84,7 @@ class SVMModel(model_interface.ModelInterface):
 
         input_layer = Input(shape=(input_dim,), name='input_layer')
         encoded = Dense(encoding_dim, activation=activation, name='encoder_output')(input_layer)
-        decoded = Dense(input_dim, activation=output_activation, name='decoder_output')(encoded) # Use config
+        decoded = Dense(input_dim, activation=output_activation, name='decoder_output')(encoded)
 
         autoencoder = Model(inputs=input_layer, outputs=decoded, name='autoencoder')
         encoder = Model(inputs=input_layer, outputs=encoded, name='encoder')
@@ -99,7 +99,7 @@ class SVMModel(model_interface.ModelInterface):
         else:
             optimizer = optimizer_name
 
-        autoencoder.compile(optimizer=optimizer, loss=loss_function) # Use config
+        autoencoder.compile(optimizer=optimizer, loss=loss_function)
         # print("Autoencoder Architecture:")
         autoencoder.summary(print_fn=print)
         return autoencoder, encoder
@@ -127,7 +127,7 @@ class SVMModel(model_interface.ModelInterface):
         self.autoencoder, self.encoder = self.__build_autoencoder(self.n_features)
         # print(f"Fitting Autoencoder for {epochs} epochs...")
         self.autoencoder.fit(X_train_scaled, X_train_scaled,
-                             epochs=epochs, batch_size=batch_size, # Use config
+                             epochs=epochs, batch_size=batch_size,
                              validation_split=0.1, shuffle=True, verbose=1)
         # print("Autoencoder fitting complete.")
 
@@ -163,7 +163,7 @@ class SVMModel(model_interface.ModelInterface):
         elif isinstance(data, np.ndarray):
             if data.ndim == 1: 
                 data = data.reshape(1, -1)
-            elif data.ndim == 3 and data.shape[1] == 1: # Add this condition
+            elif data.ndim == 3 and data.shape[1] == 1:
                 # Reshape from (samples, 1, features) to (samples, features)
                 data = data.reshape(data.shape[0], data.shape[2]) 
             
@@ -238,21 +238,21 @@ class SVMModel(model_interface.ModelInterface):
         if self.threshold is None:
             raise RuntimeError("Threshold not set. Call run() first to train and set threshold.")
         if not np.isfinite(self.threshold):
-             warnings.warn(f"Threshold is not finite ({self.threshold}). Probability calculation might be unreliable.", RuntimeWarning)
-             # Handle non-finite threshold for scaling gracefully
-             # Get scores first to determine output shape
-             scores = self.get_anomaly_score(detection_data)
-             n_scores = len(scores)
-             if n_scores == 0: return np.empty((0, 2))
+            warnings.warn(f"Threshold is not finite ({self.threshold}). Probability calculation might be unreliable.", RuntimeWarning)
+            # Handle non-finite threshold for scaling gracefully
+            # Get scores first to determine output shape
+            scores = self.get_anomaly_score(detection_data)
+            n_scores = len(scores)
+            if n_scores == 0: return np.empty((0, 2))
 
-             # If threshold is -inf, all scores are > threshold => P(Anomaly) = 0
-             if self.threshold == -np.inf:
-                 return np.hstack([np.ones((n_scores, 1)), np.zeros((n_scores, 1))])
-             # If threshold is +inf, all scores are < threshold => P(Anomaly) = 1
-             if self.threshold == np.inf:
-                  return np.hstack([np.zeros((n_scores, 1)), np.ones((n_scores, 1))])
-             # Handle NaN case - return uncertain probabilities? Or 0.5/0.5? Let's use 0.5/0.5
-             return np.full((n_scores, 2), 0.5)
+            # If threshold is -inf, all scores are > threshold => P(Anomaly) = 0
+            if self.threshold == -np.inf:
+                return np.hstack([np.ones((n_scores, 1)), np.zeros((n_scores, 1))])
+            # If threshold is +inf, all scores are < threshold => P(Anomaly) = 1
+            if self.threshold == np.inf:
+                return np.hstack([np.zeros((n_scores, 1)), np.ones((n_scores, 1))])
+            # Handle NaN case - return uncertain probabilities? Or 0.5/0.5? Let's use 0.5/0.5
+            return np.full((n_scores, 2), 0.5)
 
 
         # Get the SVM decision function scores (lower = more anomalous)
@@ -261,7 +261,7 @@ class SVMModel(model_interface.ModelInterface):
         if scores.size == 0:
             return np.empty((0, 2)) # Return empty array with correct number of columns
 
-        # Define the sigmoid function
+        # Sigmoid function
         def sigmoid(x):
             # Clip x to avoid overflow/underflow in exp
             x_clipped = np.clip(x, -500, 500)
@@ -286,5 +286,5 @@ class SVMModel(model_interface.ModelInterface):
         # Stack probabilities into the desired (n_samples, 2) shape
         probabilities = np.vstack([prob_normal, prob_anomaly]).T
 
-        ## print(f"Calculated anomaly probabilities for {probabilities.shape[0]} samples.") # Optional print
+        ## print(f"Calculated anomaly probabilities for {probabilities.shape[0]} samples.")
         return probabilities

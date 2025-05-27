@@ -14,7 +14,7 @@ class BackendAPI:
 
     # Sends a request to the backend to start a batch job
     def run_batch(self, model: str, dataset: str, name: str, debug=False,
-                inj_params: Optional[List[Dict[str, Any]]]=None, # Backend expects list? Match frontend
+                inj_params: Optional[List[Dict[str, Any]]]=None,
                 label_column: Optional[str]=None,
                 time_column: Optional[str]=None,
                 xai_params: Optional[Dict[str, Any]]=None,
@@ -24,7 +24,7 @@ class BackendAPI:
             "METHOD": "run-batch",
             "model": model,
             "dataset": dataset,
-            "name": "job_batch_"+name, # Consider just passing 'name' maybe?
+            "name": "job_batch_"+name,
             "debug": debug,
         }
         print(label_column)
@@ -54,7 +54,7 @@ class BackendAPI:
             "METHOD": "run-batch",
             "model": model,
             "dataset": dataset,
-            "name": "job_batch_"+name, # Consider just passing 'name' maybe?
+            "name": "job_batch_"+name,
             "debug": debug,
         }
         if inj_params:

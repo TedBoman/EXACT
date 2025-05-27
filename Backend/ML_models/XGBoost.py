@@ -3,7 +3,7 @@ import pandas as pd
 import xgboost as xgb
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV # k-fold cross-validation
-from sklearn.metrics import roc_auc_score, f1_score, accuracy_score # For direct evaluation
+from sklearn.metrics import roc_auc_score, f1_score, accuracy_score
 from ML_models import model_interface 
 from typing import List, Dict, Optional, Tuple, Union
 import warnings
@@ -199,7 +199,7 @@ class XGBoostModel(model_interface.ModelInterface):
 
                 # Scaling
                 X_processed_scaled = self.scaler.transform(X_features_np)
-                return X_processed_scaled, None, self.processed_feature_names # No labels
+                return X_processed_scaled, None, self.processed_feature_names
 
         elif isinstance(X, np.ndarray):
             # Handle both 3D and 2D NumPy input, especially for inference
@@ -229,7 +229,7 @@ class XGBoostModel(model_interface.ModelInterface):
                 if original_ndim != 3: # Ensure original input was 3D for training
                     raise ValueError(f"NumPy training input must be 3D, got {original_ndim}D.")
 
-                # print(f"DEBUG _prepare_data (Train): NumPy input shape {temp_X.shape}") # Add shape print
+                # print(f"DEBUG _prepare_data (Train): NumPy input shape {temp_X.shape}")
                 self.input_type = 'numpy'
                 self.sequence_length = seq_len
                 self.n_original_features = n_feat
@@ -282,7 +282,7 @@ class XGBoostModel(model_interface.ModelInterface):
                 # print(f"DEBUG _prepare_data (Inference): Scaled 2D data shape: {X_processed_scaled.shape}")
 
                 # Return 2D scaled data for XGBoost prediction
-                return X_processed_scaled, None, self.processed_feature_names # No labels
+                return X_processed_scaled, None, self.processed_feature_names
 
         else:
             raise TypeError("Input 'X' must be pandas DataFrame or NumPy array.")
@@ -320,7 +320,7 @@ class XGBoostModel(model_interface.ModelInterface):
             warnings.warn(f"Number of samples ({X_processed_full.shape[0]}) is less than search_cv_splits ({self.search_cv_splits}). Hyperparameter search might fail or be unreliable.", RuntimeWarning)
 
 
-        # --- Step 1.5: Hyperparameter Tuning (Optional) ---
+        # --- Step 1.5: Hyperparameter Tuning ---
         if self.auto_tune:
             # print("\n" + "-" * 30)
             # print("Starting Hyperparameter Tuning with RandomizedSearchCV...")
@@ -373,7 +373,7 @@ class XGBoostModel(model_interface.ModelInterface):
                 param_distributions=self.hyperparam_grid,
                 n_iter=actual_n_iter,
                 scoring=self.search_scoring_metric,
-                n_jobs=-1,  # Parallelize search trials
+                n_jobs=-1,
                 cv=search_cv_strategy,
                 random_state=self.random_state,
                 verbose=self.search_verbose

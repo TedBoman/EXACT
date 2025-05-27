@@ -7,13 +7,8 @@ from XAI_methods.methods.ShapExplainer import ShapExplainer
 from XAI_methods.methods.LimeExplainer import LimeExplainer
 from XAI_methods.methods.DiceExplainer import DiceExplainer
 
-# Import the base API if you use type hints or checks
-try:
-    from explainer_method_api import ExplainerMethodAPI
-except ImportError:
-    # Define a dummy if the API file isn't used directly but helps clarity
-    import abc
-    class ExplainerMethodAPI(abc.ABC): pass
+from explainer_method_api import ExplainerMethodAPI
+
 
 
 def xai_factory(
@@ -105,5 +100,5 @@ def xai_factory(
 
         case _:
             # Handle unsupported method names
-            supported = ["shapexplainer", "limeexplainer"] # Add 'lime' etc. when implemented
+            supported = ["ShapExplainer", "LimeExplainer", "DiceExplainer"] # Add when implemented
             raise ValueError(f"Unsupported explanation method requested: '{method_key}'. Supported: {supported}")

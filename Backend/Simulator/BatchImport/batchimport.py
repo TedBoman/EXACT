@@ -1,4 +1,3 @@
-# batchimport.py
 import sys
 import traceback
 import psycopg2
@@ -10,7 +9,6 @@ import numpy as np
 import pandas as pd
 import pytz
 
-#from Simulator.DBAPI.db_interface import DBInterface as db
 from timescaledb_api import TimescaleDBAPI as db
 from Simulator.AnomalyInjector.anomalyinjector import TimeSeriesAnomalyInjector
 import Simulator.DBAPI.utils as ut
@@ -118,7 +116,7 @@ class BatchImporter:
                 dl.print_exception(f"Error converting chunk timestamp to UTC for {table_name}: {e_ts_conv}. Skipping insertion.")
                 return
         
-        db_instance = self.init_db(conn_params) # init_db is part of BatchImporter, might need to be static or passed
+        db_instance = self.init_db(conn_params)
         if not db_instance:
             dl.debug_print(f"Process {mp.current_process().pid}: DB connection failed in process_chunk for table {table_name}. Chunk not inserted.")
             return 
@@ -158,7 +156,6 @@ class BatchImporter:
                 injected_sum_before_this_setting_bool = current_modified_chunk['injected_anomaly'].astype(bool).sum() if 'injected_anomaly' in current_modified_chunk else 0
                 num_newly_flagged_by_this_setting = injected_sum_after_this_setting - injected_sum_before_this_setting_bool
 
-
                 if num_newly_flagged_by_this_setting > 0:
                     dl.debug_print(f"    Processed setting {i} ('{setting.anomaly_type}'): {num_newly_flagged_by_this_setting} new 'injected_anomaly' flags set by injector in chunk {chunk_index_for_logging}.")
                 elif injected_sum_after_this_setting > 0 and injected_sum_before_this_setting_bool == 0 :
@@ -170,7 +167,6 @@ class BatchImporter:
                 sys.stdout.flush()
         
         return current_modified_chunk
-    
     
     def start_simulation(self, conn_params, anomaly_settings=None, table_name=None, timestamp_col_name=None, label_col_name=None):
         """
@@ -285,7 +281,7 @@ class BatchImporter:
         full_df.sort_values(by='timestamp', inplace=True)
         dl.debug_print("DataFrame sorted by 'timestamp' column.")
 
-        # ***** SET self.start_time FROM THE FIRST VALID TIMESTAMP *****
+        # SET self.start_time FROM THE FIRST VALID TIMESTAMP
         self.start_time = full_df['timestamp'].iloc[0]
         dl.debug_print(f"Data-derived self.start_time set to: {self.start_time}")
 
@@ -313,8 +309,7 @@ class BatchImporter:
                         dl.debug_print(f"  WARNING: Anomaly setting {i}: TypeError during offset calculation for timestamp '{original_setting_ts}' (start_time: {self.start_time}). Error: {te}. Skipping.")
                         continue
 
-
-                # Step 2: Ensure the (now absolute) setting.timestamp is UTC-aware
+                # Step 2: Ensure the setting.timestamp is UTC-aware
                 if isinstance(setting.timestamp, pd.Timestamp):
                     if setting.timestamp.tzinfo is None:
                         # If self.start_time was naive, the resulting absolute timestamp is naive.
@@ -390,7 +385,7 @@ class BatchImporter:
                         chunk_to_process.loc[:, 'is_anomaly'] = False
                     is_anomaly_bool = chunk_to_process['is_anomaly'].astype(bool)
                     injected_anomaly_bool = chunk_to_process['injected_anomaly'].astype(bool)
-                    chunk_to_process.loc[:, 'is_anomaly'] = (is_anomaly_bool | injected_anomaly_bool) # Result of OR is boolean
+                    chunk_to_process.loc[:, 'is_anomaly'] = (is_anomaly_bool | injected_anomaly_bool)
                 
                 dl.debug_print(f"  Chunk {idx+1} PREPARED for worker. injected_anomaly sum: {chunk_to_process['injected_anomaly'].sum()}, is_anomaly sum: {chunk_to_process['is_anomaly'].sum()}")
                 sys.stdout.flush()

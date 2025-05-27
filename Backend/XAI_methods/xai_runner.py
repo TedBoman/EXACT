@@ -1,4 +1,3 @@
-# xai_runner.py
 import datetime
 import json
 import sys
@@ -35,7 +34,7 @@ class XAIRunner:
         job_name: str,
         mode: str = 'classification', # Default mode
         output_dir: str = OUTPUT_DIR,
-        # --- New arguments for NDCG ---
+        # --- Arguments for NDCG ---
         inj_params: Optional[List[List[Dict[str, Any]]]] = None, # Injected anomaly parameters
         timestamp_col_name: str = 'timestamp', # Name of the timestamp column
     ):
@@ -71,7 +70,7 @@ class XAIRunner:
         self.mode = mode
         self.output_dir = output_dir
         
-        self.xai_settings_global = xai_settings.get("xai_settings") # Renamed to avoid conflict
+        self.xai_settings_global = xai_settings.get("xai_settings")
         self.xai_sampling_strategy = xai_settings.get("xai_sampling_strategy", "random")
         self.xai_sample_seed = xai_settings.get("xai_sample_seed", None)
         
@@ -102,9 +101,9 @@ class XAIRunner:
     def _get_ground_truth_features_for_instance(
         self,
         instance_original_df_idx: int, # Index in source_df
-        source_df: pd.DataFrame      # This is data_source_for_explanation
+        source_df: pd.DataFrame        # This is data_source_for_explanation
     ) -> List[str]:
-        # # print(f"DEBUG NDCG_GT: Called for instance_orig_df_idx: {instance_original_df_idx}") # VERY FIRST PRINT
+        # print(f"DEBUG NDCG_GT: Called for instance_orig_df_idx: {instance_original_df_idx}"
 
         if self.inj_params is None or not self.inj_params:
             # # print(f"DEBUG NDCG_GT: Exiting - self.inj_params is None or empty.")
@@ -112,13 +111,13 @@ class XAIRunner:
 
         try:
             if instance_original_df_idx >= len(source_df):
-                # # print(f"DEBUG NDCG_GT: Exiting - instance_original_df_idx {instance_original_df_idx} is out of bounds for source_df (len {len(source_df)}).")
+                # print(f"DEBUG NDCG_GT: Exiting - instance_original_df_idx {instance_original_df_idx} is out of bounds for source_df (len {len(source_df)}).")
                 return []
 
             instance_label = source_df.iloc[instance_original_df_idx][self.actual_label_col]
             is_anomaly = (str(instance_label) == '1' or instance_label is True or instance_label == 1)
             
-            # # print(f"DEBUG NDCG_GT: Instance_idx={instance_original_df_idx}, Label='{instance_label}', IsAnomaly={is_anomaly}")
+            # print(f"DEBUG NDCG_GT: Instance_idx={instance_original_df_idx}, Label='{instance_label}', IsAnomaly={is_anomaly}")
 
             if not is_anomaly:
                 # # # print(f"DEBUG NDCG_GT: Instance_idx={instance_original_df_idx} is NOT an anomaly. Skipping GT search.") # Less verbose for non-anomalies
@@ -127,40 +126,40 @@ class XAIRunner:
             self.ndcg_anomalies_explained_count +=1
 
             if self.timestamp_col_name not in source_df.columns:
-                # # print(f"DEBUG NDCG_GT: Exiting - Timestamp column '{self.timestamp_col_name}' not in source_df. Columns: {source_df.columns.tolist()}")
+                # print(f"DEBUG NDCG_GT: Exiting - Timestamp column '{self.timestamp_col_name}' not in source_df. Columns: {source_df.columns.tolist()}")
                 return []
             
             instance_timestamp_val = source_df.iloc[instance_original_df_idx][self.timestamp_col_name]
-            # # print(f"DEBUG NDCG_GT: Instance_idx={instance_original_df_idx}, Raw TS Value='{instance_timestamp_val}', Type={type(instance_timestamp_val)}")
+            # print(f"DEBUG NDCG_GT: Instance_idx={instance_original_df_idx}, Raw TS Value='{instance_timestamp_val}', Type={type(instance_timestamp_val)}")
 
             if not isinstance(instance_timestamp_val, pd.Timestamp):
-                # # print(f"DEBUG NDCG_GT: Exiting - Instance timestamp is not pd.Timestamp.")
+                # print(f"DEBUG NDCG_GT: Exiting - Instance timestamp is not pd.Timestamp.")
                 return []
             
             current_instance_ts_utc = instance_timestamp_val.tz_convert('UTC') if instance_timestamp_val.tzinfo else instance_timestamp_val.tz_localize('UTC')
 
             if source_df.empty:
-                # # print(f"DEBUG NDCG_GT: Exiting - source_df is empty.")
+                # print(f"DEBUG NDCG_GT: Exiting - source_df is empty.")
                 return []
             
             base_timestamp_from_data = source_df[self.timestamp_col_name].min()
             if not isinstance(base_timestamp_from_data, pd.Timestamp):
-                 # # print(f"DEBUG NDCG_GT: Exiting - Base timestamp from data is not pd.Timestamp. Type: {type(base_timestamp_from_data)}")
+                 # print(f"DEBUG NDCG_GT: Exiting - Base timestamp from data is not pd.Timestamp. Type: {type(base_timestamp_from_data)}")
                  return []
             base_ts_utc = base_timestamp_from_data.tz_convert('UTC') if base_timestamp_from_data.tzinfo else base_timestamp_from_data.tz_localize('UTC')
             
-            # # print(f"DEBUG NDCG_GT: Instance_TS_UTC={current_instance_ts_utc}, Base_TS_UTC={base_ts_utc}")
+            # print(f"DEBUG NDCG_GT: Instance_TS_UTC={current_instance_ts_utc}, Base_TS_UTC={base_ts_utc}")
 
             for group_idx, anomaly_group in enumerate(self.inj_params):
-                # # print(f"DEBUG NDCG_GT: Processing inj_params group {group_idx}")
+                # print(f"DEBUG NDCG_GT: Processing inj_params group {group_idx}")
                 for setting_idx, inj_setting in enumerate(anomaly_group):
-                    # # print(f"DEBUG NDCG_GT:  Inj_setting {setting_idx}: {inj_setting}")
+                    # print(f"DEBUG NDCG_GT:  Inj_setting {setting_idx}: {inj_setting}")
                     inj_ts_offset_str = inj_setting.get("timestamp")
                     inj_duration_str = inj_setting.get("duration")
                     inj_columns = inj_setting.get("columns")
 
                     if inj_ts_offset_str is None or inj_duration_str is None or inj_columns is None:
-                        # # print(f"DEBUG NDCG_GT:   Skipping inj_setting {setting_idx} due to missing fields.")
+                        # print(f"DEBUG NDCG_GT:   Skipping inj_setting {setting_idx} due to missing fields.")
                         continue
                     
                     try:
@@ -168,30 +167,30 @@ class XAIRunner:
                         duration_seconds = ut.parse_duration_to_seconds(inj_duration_str)
                         
                         if duration_seconds is None: 
-                             # # print(f"DEBUG NDCG_GT:   Could not parse duration '{inj_duration_str}' for inj_setting {setting_idx}. Skipping.")
+                            # print(f"DEBUG NDCG_GT:   Could not parse duration '{inj_duration_str}' for inj_setting {setting_idx}. Skipping.")
                              continue
                         
                         inj_ts_start_actual = base_ts_utc + pd.Timedelta(seconds=offset_seconds)
                         inj_ts_end_actual = inj_ts_start_actual + pd.Timedelta(seconds=duration_seconds)
-                        # # print(f"DEBUG NDCG_GT:   Calculated Inj Window: Start={inj_ts_start_actual}, End={inj_ts_end_actual}")
+                        # print(f"DEBUG NDCG_GT:   Calculated Inj Window: Start={inj_ts_start_actual}, End={inj_ts_end_actual}")
 
                         if inj_ts_start_actual <= current_instance_ts_utc < inj_ts_end_actual:
                             # # print(f"DEBUG NDCG_GT:   MATCH FOUND for instance {instance_original_df_idx}! Inj Cols={inj_columns}")
                             self.ndcg_ground_truth_found_count +=1
                             return inj_columns
                         # else:
-                        #     # # print(f"DEBUG NDCG_GT:   No match for instance {instance_original_df_idx} with this inj_setting.")
+                            # print(f"DEBUG NDCG_GT:   No match for instance {instance_original_df_idx} with this inj_setting.")
 
                     except ValueError as ve:
-                        # # print(f"DEBUG NDCG_GT:   ValueError processing inj_setting {setting_idx} timestamp_offset or duration: {ve}. Skipping.")
+                        # print(f"DEBUG NDCG_GT:   ValueError processing inj_setting {setting_idx} timestamp_offset or duration: {ve}. Skipping.")
                         continue
                     except Exception as e:
-                        # # print(f"DEBUG NDCG_GT:   Error processing inj_setting {setting_idx}: {e}. Skipping.")
+                        # print(f"DEBUG NDCG_GT:   Error processing inj_setting {setting_idx}: {e}. Skipping.")
                         continue
-            # # print(f"DEBUG NDCG_GT: No matching injection found for instance {instance_original_df_idx} after checking all inj_params.")
+            # print(f"DEBUG NDCG_GT: No matching injection found for instance {instance_original_df_idx} after checking all inj_params.")
             return []
         except Exception as e:
-            # # print(f"DEBUG NDCG_GT: CRITICAL ERROR in _get_ground_truth_features_for_instance for index {instance_original_df_idx}: {e}")
+            # print(f"DEBUG NDCG_GT: CRITICAL ERROR in _get_ground_truth_features_for_instance for index {instance_original_df_idx}: {e}")
             traceback.print_exc()
             return []
         
@@ -265,21 +264,8 @@ class XAIRunner:
                     continue
 
                 for _, cf_row_series in cf_example.final_cfs_df.iterrows():
-                    # cf_row_series is one counterfactual (flat features)
-                    # We need to compare it to the original_flat features
-                    # The column names in cf_row_series are the flattened feature names
                     
-                    # Create a flattened version of the counterfactual from the series
-                    # Assuming the DiCE output columns match the order/names of flattened features
-                    # derived during DiCE initialization.
-                    
-                    cf_flat_values = []
-                    # Construct flat CF values in the same order as feature_columns * sequence_length
-                    # This requires knowing the flattened feature names DiCE used.
-                    # Let's get them from the explainer object if possible, or regenerate.
-                    # This is a bit fragile if names aren't perfectly aligned.
-                    
-                    # Regenerate flat feature names used by DiCE (more robust)
+                    # Regenerate flat feature names used by DiCE
                     # This assumes DiceExplainer.py uses this convention:
                     dice_flat_feature_names = []
                     for t in range(self.sequence_length):
@@ -384,9 +370,9 @@ class XAIRunner:
             # Correctly get end indices for background labels
             # If background_data_np was sampled, indices_bg_sample contains the original starting indices of these sequences
             if 'indices_bg_sample' in locals():
-                 end_indices_bg_labels = [start_idx + self.sequence_length - 1 for start_idx in indices_bg_sample]
+                end_indices_bg_labels = [start_idx + self.sequence_length - 1 for start_idx in indices_bg_sample]
             else: # Background data was not sampled, use all
-                 end_indices_bg_labels = [i + self.sequence_length - 1 for i in range(num_bg_sequences)]
+                end_indices_bg_labels = [i + self.sequence_length - 1 for i in range(num_bg_sequences)]
             
             valid_end_indices_bg_labels = [idx for idx in end_indices_bg_labels if idx < len(training_df_with_labels)]
             if len(valid_end_indices_bg_labels) != num_bg_sequences:
@@ -420,12 +406,12 @@ class XAIRunner:
                 ts_explainer = TimeSeriesExplainer(
                     model=self.model_wrapper,
                     background_data=background_data_np,
-                    background_outcomes=background_outcomes_np, # Pass the extracted labels
+                    background_outcomes=background_outcomes_np,
                     feature_names=self.feature_columns,
                     mode=self.mode,
                     # --- Pass DiCE specific context as kwargs ---
-                    training_df_for_dice=training_df_with_labels, # Pass the df with labels
-                    outcome_name_for_dice=self.actual_label_col, # Pass the label col name
+                    training_df_for_dice=training_df_with_labels,
+                    outcome_name_for_dice=self.actual_label_col,
                     continuous_features_for_dice=self.continuous_features_list,
                     # --- Shap Explainer Method ---
                     shap_method=shap_method_for_init
@@ -438,7 +424,7 @@ class XAIRunner:
 
             # --- 3. Prepare ALL Instances and Labels from Explanation Source ---
             all_instances_to_explain_np = np.array([])
-            all_original_labels_for_exp_source = None # Renamed to avoid conflict
+            all_original_labels_for_exp_source = None
             num_instances_available = 0
             try:
                 # print(f"Generating all possible sequences from explanation data source...")
@@ -495,7 +481,7 @@ class XAIRunner:
                 # print(f"\n===== Running Method: {method_name.upper()} =====")
 
                 try:
-                    # --- *** Determine Indices TO Explain for THIS method *** ---
+                    # --- Determine Indices TO Explain for THIS method ---
                     final_sequence_indices = np.array([], dtype=int)
                     method_specific_orig_indices = settings.get('explain_indices') # Check for override list
 
@@ -614,14 +600,6 @@ class XAIRunner:
                                             'desired_class': settings.get('desired_class', 'opposite'), 
                                             'features_to_vary': features_to_vary}
                         # print(f"DiCE Runtime Params: {dice_runtime_kwargs}")
-                        
-                        # DiCE usually explains one instance at a time through its API,
-                        # even if the `explain` method of TimeSeriesExplainer takes a batch.
-                        # The `ts_explainer.explain` for DiCE should return a list of CounterfactualExplanations objects,
-                        # one for each instance in current_instances_np.
-                        # Or, the DiceExplainer.explain itself might need to be called in a loop if it only takes one.
-                        # Let's assume ts_explainer.explain for DiCE returns a list of results if input is batch.
-                        # If not, this loop structure needs to be around the explain call too.
 
                         # For DiCE, we will process one instance at a time for NDCG
                         # # print(f"DEBUG DiCE: Processing {num_sequences_to_process_for_method} instances for DiCE explanations and NDCG.")
@@ -639,9 +617,6 @@ class XAIRunner:
                                 current_label_single_for_dice = [current_original_labels_for_method[loop_idx]]
 
                             try:
-                                # Assuming ts_explainer.explain for DiCE can take one instance
-                                # or returns a list where we can pick the one for this loop_idx.
-                                # For simplicity, let's assume we call it for one instance here.
                                 dice_explanation_object_for_instance = ts_explainer.explain(
                                     instances_to_explain=current_instance_single_np_for_dice, 
                                     method_name=method_name, 
@@ -729,18 +704,18 @@ class XAIRunner:
                             shap_values_to_process.shape[0] != num_sequences_to_process_for_method:
                                 warnings.warn(f"SHAP results for NDCG have unexpected format/shape. Expected {num_sequences_to_process_for_method} instances. Got shape: {getattr(shap_values_to_process,'shape','N/A')}. Skipping NDCG for SHAP.", RuntimeWarning)
                             else:
-                                # # print(f"DEBUG run_explanations SHAP: Processing {num_sequences_to_process_for_method} instances for NDCG.")
+                                # print(f"DEBUG run_explanations SHAP: Processing {num_sequences_to_process_for_method} instances for NDCG.")
                                 for loop_idx in range(num_sequences_to_process_for_method):
                                     instance_orig_df_idx = final_sequence_indices_in_full_set[loop_idx] + self.sequence_length - 1
-                                    # # print(f"DEBUG run_explanations SHAP Loop: loop_idx={loop_idx}, instance_orig_df_idx={instance_orig_df_idx}")
+                                    # print(f"DEBUG run_explanations SHAP Loop: loop_idx={loop_idx}, instance_orig_df_idx={instance_orig_df_idx}")
                                     if instance_orig_df_idx >= len(data_source_for_explanation):
-                                        # # print(f"DEBUG run_explanations SHAP Loop: SKIPPING instance_orig_df_idx {instance_orig_df_idx} (out of bounds for source_df len {len(data_source_for_explanation)})")
+                                        # print(f"DEBUG run_explanations SHAP Loop: SKIPPING instance_orig_df_idx {instance_orig_df_idx} (out of bounds for source_df len {len(data_source_for_explanation)})")
                                         continue
                                     
-                                    # # print(f"DEBUG run_explanations SHAP: Attempting to get GT for instance_orig_df_idx={instance_orig_df_idx}")
+                                    # print(f"DEBUG run_explanations SHAP: Attempting to get GT for instance_orig_df_idx={instance_orig_df_idx}")
                                     true_relevant_feats = self._get_ground_truth_features_for_instance(instance_orig_df_idx, data_source_for_explanation)
                                     if true_relevant_feats:
-                                        # # print(f"DEBUG run_explanations SHAP: GT found for {instance_orig_df_idx}: {true_relevant_feats}")
+                                        # print(f"DEBUG run_explanations SHAP: GT found for {instance_orig_df_idx}: {true_relevant_feats}")
                                         shap_slice_for_instance = shap_values_to_process[loop_idx] # This is (seq_len, n_features)
                                         xai_scores = self._extract_aggregated_feature_scores(shap_slice_for_instance, method_name)
                                         if xai_scores:
@@ -750,9 +725,9 @@ class XAIRunner:
                                                 self.ndcg_results.setdefault(method_name, {}).setdefault(k_val, []).append(ndcg_score)
                                                 # print(f"  SHAP NDCG@{k_val} for instance {loop_idx} (OrigDFIdx {instance_orig_df_idx}): {ndcg_score:.4f}") # Original print
                                         # else:
-                                            # # print(f"DEBUG run_explanations SHAP: No XAI scores extracted for instance {loop_idx} (OrigDFIdx {instance_orig_df_idx}).")
+                                            # print(f"DEBUG run_explanations SHAP: No XAI scores extracted for instance {loop_idx} (OrigDFIdx {instance_orig_df_idx}).")
                                     # else:
-                                        # # print(f"DEBUG run_explanations SHAP: No GT for {instance_orig_df_idx}")
+                                        # print(f"DEBUG run_explanations SHAP: No GT for {instance_orig_df_idx}")
                         # --- END NDCG FOR SHAP ---
 
                     elif method_name == "LimeExplainer":
@@ -899,10 +874,10 @@ class XAIRunner:
         # print(f"--- Finished XAI Execution via XAIRunner for job '{self.job_name}' ---")
         # print(f"DEBUG run_explanations: NDCG Summary: Found ground truth for {self.ndcg_ground_truth_found_count} instances out of {self.ndcg_anomalies_explained_count} explained anomalous instances.") # Added
         # if self.ndcg_anomalies_explained_count == 0 and self.inj_params: # Added
-             # print("DEBUG run_explanations: NDCG Warning: No anomalous instances were selected for explanation OR label mismatch. NDCG cannot be calculated meaningfully.") # Added
+            # print("DEBUG run_explanations: NDCG Warning: No anomalous instances were selected for explanation OR label mismatch. NDCG cannot be calculated meaningfully.") # Added
         # elif self.ndcg_ground_truth_found_count == 0 and self.ndcg_anomalies_explained_count > 0: # Added
-             # print("DEBUG run_explanations: NDCG Warning: Ground truth features could not be matched for any explained anomalous instances. Check timestamp/duration/label alignment in inj_params and data.") # Added
-        # # print(f"DEBUG run_explanations: FINAL ndcg_results dictionary: {self.ndcg_results}") # Added
+            # print("DEBUG run_explanations: NDCG Warning: Ground truth features could not be matched for any explained anomalous instances. Check timestamp/duration/label alignment in inj_params and data.") # Added
+        # print(f"DEBUG run_explanations: FINAL ndcg_results dictionary: {self.ndcg_results}") # Added
         
         
     def get_xai_method_timings(self) -> Dict[str, float]:

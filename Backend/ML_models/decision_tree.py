@@ -266,7 +266,7 @@ class DecisionTreeModel(model_interface.ModelInterface):
             X_processed_scaled = self.scaler.fit_transform(X_features_np)
         else:
             if self.scaler is None or not hasattr(self.scaler, 'scale_'): 
-                 raise RuntimeError("Scaler not fitted. Call run() first.")
+                raise RuntimeError("Scaler not fitted. Call run() first.")
             X_processed_scaled = self.scaler.transform(X_features_np)
         
         # --- Stage 3: Imputation ---
@@ -275,7 +275,7 @@ class DecisionTreeModel(model_interface.ModelInterface):
             X_processed_imputed = self.imputer.fit_transform(X_processed_scaled)
         else:
             if self.imputer is None or not hasattr(self.imputer, 'statistics_'): 
-                 raise RuntimeError("Imputer not fitted. Call run() first.")
+                raise RuntimeError("Imputer not fitted. Call run() first.")
             X_processed_imputed = self.imputer.transform(X_processed_scaled)
             
         # Check for remaining NaNs after imputation (should ideally be zero)
@@ -526,8 +526,8 @@ class DecisionTreeModel(model_interface.ModelInterface):
                         try:
                             if metric_name == 'accuracy':
                                 score = accuracy_score(y_val_fold, y_pred_val_fold)
-                            elif metric_name == 'f1': # This is the user's key, map to a specific f1 if needed
-                                score = f1_score(y_val_fold, y_pred_val_fold, average='macro', zero_division=0) # Or 'binary' if appropriate
+                            elif metric_name == 'f1': 
+                                score = f1_score(y_val_fold, y_pred_val_fold, average='macro', zero_division=0)
                             elif metric_name == 'roc_auc':
                                 if len(np.unique(y_val_fold)) > 1 and hasattr(temp_model, 'classes_'):
                                     pos_class_idx = np.where(temp_model.classes_ == 1)[0]
@@ -689,10 +689,10 @@ class DecisionTreeModel(model_interface.ModelInterface):
         return final_anomalies
 
 
-    # --- METHOD FOR XAI (SHAP/LIME) ---
+    # --- METHOD FOR XAI ---
     def predict_proba(self, X_xai: np.ndarray) -> np.ndarray:
         """
-        Prediction function for XAI methods (SHAP/LIME).
+        Prediction function for XAI methods.
         Handles potential 3D input (if seq_len=1 for DF model) by reshaping.
         Ensures data is scaled and imputed before prediction.
         Returns probabilities for all classes.
@@ -750,7 +750,7 @@ class DecisionTreeModel(model_interface.ModelInterface):
 
                 # Flatten 3D input to 2D for internal model
                 n_flattened = seq_len_np * n_feat_np
-                # # print(f"DEBUG (predict_proba NP): Reshaping XAI input {X_xai.shape} to 2D ({n_inst_np}, {n_flattened}).") # Optional debug
+                # # print(f"DEBUG (predict_proba NP): Reshaping XAI input {X_xai.shape} to 2D ({n_inst_np}, {n_flattened}).")
                 X_to_process_2d = X_xai.reshape(n_inst_np, n_flattened)
 
             else:
@@ -775,7 +775,7 @@ class DecisionTreeModel(model_interface.ModelInterface):
 
             # --- Step 4: Predict probabilities using the internal model ---
             if X_imputed is None: # Should not happen
-                 raise RuntimeError("Internal error: Imputed data for XAI prediction is None.")
+                raise RuntimeError("Internal error: Imputed data for XAI prediction is None.")
 
             probabilities = self.model.predict_proba(X_imputed)
 

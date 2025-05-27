@@ -65,7 +65,7 @@ class SGDLinearModel(model_interface.ModelInterface):
         self.sequence_length: Optional[int] = None
         self.n_original_features: Optional[int] = None
         self.label_col: Optional[str] = None
-        self._is_calibrated = False # Flag to indicate if CalibratedClassifierCV is used
+        self._is_calibrated = False
 
         self.validation_scores_: Dict[str, float] = {}
         self.n_splits = kwargs.pop('n_splits', 5)
@@ -92,9 +92,9 @@ class SGDLinearModel(model_interface.ModelInterface):
             'class_weight': kwargs.get('class_weight', 'balanced'),
             'random_state': random_state,
             'learning_rate': kwargs.get('learning_rate', 'optimal'),
-            'eta0': kwargs.get('eta0', 0.0), # Only used if learning_rate is 'constant', 'invscaling', or 'adaptive'
-            'n_jobs': kwargs.get('n_jobs', -1), # Used for One-vs-All in multiclass
-            'early_stopping': kwargs.get('early_stopping', False), # SGD can do early stopping
+            'eta0': kwargs.get('eta0', 0.0),
+            'n_jobs': kwargs.get('n_jobs', -1),
+            'early_stopping': kwargs.get('early_stopping', False),
             'validation_fraction': kwargs.get('validation_fraction', 0.1),
             'n_iter_no_change': kwargs.get('n_iter_no_change', 5),
         }
@@ -250,7 +250,7 @@ class SGDLinearModel(model_interface.ModelInterface):
                 self.scaler = MinMaxScaler()
             X_processed_scaled = self.scaler.fit_transform(X_features_np)
         else:
-            if self.scaler is None or not hasattr(self.scaler, 'scale_') and not hasattr(self.scaler, 'mean_'): # mean_ for StandardScaler
+            if self.scaler is None or not hasattr(self.scaler, 'scale_') and not hasattr(self.scaler, 'mean_'):
                  raise RuntimeError("Scaler not fitted. Call run() first.")
             X_processed_scaled = self.scaler.transform(X_features_np)
         
@@ -288,7 +288,7 @@ class SGDLinearModel(model_interface.ModelInterface):
             if X.shape[2] != len(original_feature_names): raise ValueError(f"NumPy feature dim mismatch.")
             self.original_feature_names_ = original_feature_names
         elif original_feature_names is not None:
-             warnings.warn("`original_feature_names` ignored for DataFrame input.", UserWarning)
+            warnings.warn("`original_feature_names` ignored for DataFrame input.", UserWarning)
 
         X_processed_full, y_aligned_full, _ = self._prepare_data_for_model(
             X, y=y, label_col=label_col, is_training=True
@@ -297,7 +297,7 @@ class SGDLinearModel(model_interface.ModelInterface):
         if y_aligned_full is None: raise RuntimeError("No labels for training.")
         if X_processed_full.shape[0] != len(y_aligned_full): raise RuntimeError("Data samples and labels mismatch.")
         if X_processed_full.shape[0] < self.n_splits:
-             warnings.warn(f"Samples < n_splits. CV/Search might fail.", RuntimeWarning)
+            warnings.warn(f"Samples < n_splits. CV/Search might fail.", RuntimeWarning)
 
         current_model_params = self.model_params.copy()
         self._is_calibrated = False # Reset calibration flag
@@ -308,16 +308,13 @@ class SGDLinearModel(model_interface.ModelInterface):
             base_estimator_params = {
                 'random_state': current_model_params.get('random_state'),
                 'class_weight': current_model_params.get('class_weight'),
-                'max_iter': current_model_params.get('max_iter', 1000), # Ensure max_iter is set
+                'max_iter': current_model_params.get('max_iter', 1000),
                 'tol': current_model_params.get('tol', 1e-3)
             }
             for key_to_tune in self.param_dist.keys():
                 if key_to_tune in base_estimator_params: del base_estimator_params[key_to_tune]
             
             base_estimator_params = {k: v for k, v in base_estimator_params.items() if v is not None}
-            # For SGD, it's generally better to NOT calibrate during the search itself due to time,
-            # unless probability scores are the direct optimization target.
-            # The final chosen model can be calibrated.
             temp_model_for_search = SGDClassifier(**base_estimator_params)
 
             sklearn_scoring_map = {'accuracy': 'accuracy', 'f1': 'f1_macro', 'roc_auc': 'roc_auc'}
@@ -331,10 +328,9 @@ class SGDLinearModel(model_interface.ModelInterface):
                 elif m not in scoring_dict_for_search:
                      warnings.warn(f"Metric '{m}' SKIPPED for RandomizedSearchCV.", UserWarning)
 
-
             if not scoring_dict_for_search: raise ValueError("No scikit-learn compatible metrics for RandomizedSearchCV.")
             
-            refit_metric_key = self.search_scoring # Already mapped in __init__
+            refit_metric_key = self.search_scoring
             if refit_metric_key not in scoring_dict_for_search: # Fallback if mapping failed or was complex
                 if scoring_dict_for_search : refit_metric_key = list(scoring_dict_for_search.keys())[0]
                 else: raise ValueError("Cannot determine refit metric for RandomizedSearchCV.")
@@ -358,8 +354,8 @@ class SGDLinearModel(model_interface.ModelInterface):
                 best_idx = random_search.best_index_
                 for metric_key_user in scoring_dict_for_search.keys():
                     scorer_name_sklearn = scoring_dict_for_search[metric_key_user]
-                    mean_score_col = f"mean_test_{scorer_name_sklearn}" # Corrected based on your prev code
-                    std_score_col = f"std_test_{scorer_name_sklearn}"   # Corrected
+                    mean_score_col = f"mean_test_{scorer_name_sklearn}"
+                    std_score_col = f"std_test_{scorer_name_sklearn}"
                     if mean_score_col in results_df.columns:
                         avg_score = results_df.loc[best_idx, mean_score_col]
                         std_score = results_df.loc[best_idx, std_score_col] if std_score_col in results_df.columns else np.nan
@@ -388,7 +384,6 @@ class SGDLinearModel(model_interface.ModelInterface):
                     for metric_name in self.validation_metrics: fold_scores[metric_name].append(np.nan)
                     continue
 
-                # (Metric calculation in fold - similar to other models)
                 y_pred_val_fold = temp_model_fold.predict(X_val_fold)
                 for metric_name in self.validation_metrics:
                     score = np.nan
@@ -408,7 +403,7 @@ class SGDLinearModel(model_interface.ModelInterface):
                                      score = roc_auc_score(y_val_fold, y_decision_val_fold)
                         else: # Other sklearn scorers
                             try: scorer_fn = get_scorer(metric_name); score = scorer_fn(temp_model_fold, X_val_fold, y_val_fold)
-                            except: pass # warnings.warn(...)
+                            except: pass
                         fold_scores[metric_name].append(score)
                     except Exception: fold_scores[metric_name].append(np.nan)
             # (Average fold scores - similar to other models)
@@ -416,7 +411,6 @@ class SGDLinearModel(model_interface.ModelInterface):
                 valid_scores = [s for s in fold_scores[metric_name] if not np.isnan(s)]
                 self.validation_scores_[metric_name] = np.mean(valid_scores) if valid_scores else np.nan
                 # print(f"  Avg {metric_name}: {self.validation_scores_[metric_name]:.4f}")
-        # print("-" * 30)
 
         # --- Training the FINAL Model ---
         # print(f"Training final SGDLinearModel on {X_processed_full.shape[0]} samples...")
@@ -484,8 +478,6 @@ class SGDLinearModel(model_interface.ModelInterface):
             if not hasattr(self.model, "predict_proba"):
                 warnings.warn("Model does not have predict_proba (e.g. SGD with hinge loss and no calibration). Returning decision_function or NaNs.", RuntimeWarning)
                 if hasattr(self.model, "decision_function"):
-                    # Map decision_function to a pseudo-probability (0 to 1). This is a crude sigmoid.
-                    # A more robust approach would involve proper calibration if this path is taken.
                     dec_func = self.model.decision_function(X_processed_imputed)
                     anomaly_scores = 1.0 / (1.0 + np.exp(-dec_func)) # Basic sigmoid
                 else:
@@ -530,7 +522,6 @@ class SGDLinearModel(model_interface.ModelInterface):
     def predict_proba(self, X_xai: np.ndarray) -> np.ndarray:
         """Prediction function for XAI methods. Returns probabilities for all classes."""
         if self.model is None: raise RuntimeError("Model not trained for XAI.")
-        # (Preprocessing logic identical to SupervisedSVMModel.predict_proba)
         if not isinstance(X_xai, np.ndarray): raise TypeError("X_xai must be NumPy array.")
         n_instances = X_xai.shape[0]
         if n_instances == 0:

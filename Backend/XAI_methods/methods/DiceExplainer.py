@@ -90,11 +90,11 @@ class DiceExplainer(ExplainerMethodAPI):
             if len(parts) == 2:
                  base_name = parts[0]
                  if base_name in self.continuous_feature_names_base:
-                     self.continuous_flat_feature_names.append(flat_name)
+                    self.continuous_flat_feature_names.append(flat_name)
             else:
                  if flat_name in self.continuous_feature_names_base:
-                     self.continuous_flat_feature_names.append(flat_name)
-                     warnings.warn(f"Flattened feature name '{flat_name}' matched a base continuous name directly. Ensure naming convention is consistent.", UserWarning)
+                    self.continuous_flat_feature_names.append(flat_name)
+                    warnings.warn(f"Flattened feature name '{flat_name}' matched a base continuous name directly. Ensure naming convention is consistent.", UserWarning)
 
         # --- Prepare Data for DiCE (needs 2D DataFrame) ---
         # print("Preparing data for DiCE...")
@@ -125,7 +125,7 @@ class DiceExplainer(ExplainerMethodAPI):
             # Store the initialized Data object
             self._dice_data_interface = dice_ml.Data(
                 dataframe=background_df,
-                continuous_features=self.continuous_flat_feature_names, # Use potentially updated list
+                continuous_features=self.continuous_flat_feature_names,
                 outcome_name=self.outcome_name
             )
             # print("dice_ml.Data initialized.")
@@ -139,30 +139,30 @@ class DiceExplainer(ExplainerMethodAPI):
         elif self.mode == 'regression': dice_model_type = 'regressor'
         else: raise ValueError(f"Invalid mode '{self.mode}' encountered during DiCE model initialization.")
 
-        # Define the prediction function wrapper FOR DICE
+        # Define the prediction function wrapper
         def _predict_fn_dice(input_df: pd.DataFrame, **params) -> np.ndarray:
-             num_samples = len(input_df)
-             missing_cols = set(self.flat_feature_names) - set(input_df.columns)
-             if missing_cols: raise ValueError(f"DiCE Prediction Error: Input DataFrame is missing: {missing_cols}")
+            num_samples = len(input_df)
+            missing_cols = set(self.flat_feature_names) - set(input_df.columns)
+            if missing_cols: raise ValueError(f"DiCE Prediction Error: Input DataFrame is missing: {missing_cols}")
 
-             features_only_df = input_df[self.flat_feature_names]
-             input_np_flat = features_only_df.to_numpy()
-             try:
+            features_only_df = input_df[self.flat_feature_names]
+            input_np_flat = features_only_df.to_numpy()
+            try:
                 input_np_3d = input_np_flat.reshape((num_samples,) + self._original_sequence_shape)
-             except ValueError as e:
+            except ValueError as e:
                 raise ValueError(f"DiCE Reshape Error: Cannot reshape ({input_np_flat.shape}) to ({(num_samples,) + self._original_sequence_shape}). Error: {e}") from e
 
-             if self.mode == 'classifier':
-                 if not hasattr(self.model_wrapper, 'predict_proba'): raise AttributeError("DiCE Classification Error: Model wrapper must have 'predict_proba'.")
-                 predictions = self.model_wrapper.predict_proba(input_np_3d)
-                 if predictions.ndim != 2 or predictions.shape[0] != num_samples: raise ValueError(f"Wrapper predict_proba returned shape {predictions.shape}. Expected ({num_samples}, n_classes).")
-                 return predictions
-             else: # Regression
-                 if not hasattr(self.model_wrapper, 'predict'): raise AttributeError("DiCE Regression Error: Model wrapper must have 'predict'.")
-                 predictions = self.model_wrapper.predict(input_np_3d)
-                 if predictions.ndim == 2 and predictions.shape[1] == 1: predictions = predictions.flatten()
-                 if predictions.ndim != 1 or predictions.shape[0] != num_samples: raise ValueError(f"Wrapper predict returned shape {predictions.shape}. Expected ({num_samples},) or ({num_samples}, 1).")
-                 return predictions
+            if self.mode == 'classifier':
+                if not hasattr(self.model_wrapper, 'predict_proba'): raise AttributeError("DiCE Classification Error: Model wrapper must have 'predict_proba'.")
+                predictions = self.model_wrapper.predict_proba(input_np_3d)
+                if predictions.ndim != 2 or predictions.shape[0] != num_samples: raise ValueError(f"Wrapper predict_proba returned shape {predictions.shape}. Expected ({num_samples}, n_classes).")
+                return predictions
+            else: # Regression
+                if not hasattr(self.model_wrapper, 'predict'): raise AttributeError("DiCE Regression Error: Model wrapper must have 'predict'.")
+                predictions = self.model_wrapper.predict(input_np_3d)
+                if predictions.ndim == 2 and predictions.shape[1] == 1: predictions = predictions.flatten()
+                if predictions.ndim != 1 or predictions.shape[0] != num_samples: raise ValueError(f"Wrapper predict returned shape {predictions.shape}. Expected ({num_samples},) or ({num_samples}, 1).")
+                return predictions
 
         try:
             # Store the initialized Model object
@@ -272,22 +272,22 @@ class DiceExplainer(ExplainerMethodAPI):
                 if base_name in base_names_to_vary:
                     # Check if this specific flattened name is actually a column in the query_df
                     if flat_name in query_df.columns:
-                         final_features_to_vary.append(flat_name)
-                         converted_count += 1
+                        final_features_to_vary.append(flat_name)
+                        converted_count += 1
                     else:
-                         warnings.warn(f"Base feature '{base_name}' requested in features_to_vary, but corresponding flattened feature '{flat_name}' not found in query data columns. Skipping.", RuntimeWarning)
+                        warnings.warn(f"Base feature '{base_name}' requested in features_to_vary, but corresponding flattened feature '{flat_name}' not found in query data columns. Skipping.", RuntimeWarning)
 
             # print(f"Converted base features to {len(final_features_to_vary)} valid flattened features to vary.")
             # Validate if any features remain after conversion
             if not final_features_to_vary:
-                 warnings.warn("After converting base feature names in 'features_to_vary', the list is empty. Defaulting to all continuous flattened features.", RuntimeWarning)
-                 final_features_to_vary = self.continuous_flat_feature_names # Fallback to default
+                warnings.warn("After converting base feature names in 'features_to_vary', the list is empty. Defaulting to all continuous flattened features.", RuntimeWarning)
+                final_features_to_vary = self.continuous_flat_feature_names # Fallback to default
 
         # Build the final arguments for generate_counterfactuals
         dice_runtime_args = {
-             'total_CFs': total_CFs,
-             'features_to_vary': final_features_to_vary, # Use the processed list
-             'permitted_range': kwargs.get('permitted_range', None) # Pass if provided (should use flattened names)
+            'total_CFs': total_CFs,
+            'features_to_vary': final_features_to_vary, # Use the processed list
+            'permitted_range': kwargs.get('permitted_range', None) # Pass if provided (should use flattened names)
         }
 
 
@@ -303,11 +303,11 @@ class DiceExplainer(ExplainerMethodAPI):
         # print(f"Calling DiCE generate_counterfactuals with args: {dice_runtime_args}")
         try:
             if not hasattr(self, '_explainer') or self._explainer is None:
-                 raise RuntimeError("DiCE explainer object was not initialized correctly.")
+                raise RuntimeError("DiCE explainer object was not initialized correctly.")
 
             # Check again if features_to_vary is empty before calling DiCE
             if not dice_runtime_args['features_to_vary']:
-                 raise ValueError("Cannot generate counterfactuals because the final 'features_to_vary' list is empty. Check input and continuous feature definitions.")
+                raise ValueError("Cannot generate counterfactuals because the final 'features_to_vary' list is empty. Check input and continuous feature definitions.")
 
             dice_exp = self._explainer.generate_counterfactuals(
                 query_instances=query_df,

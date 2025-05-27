@@ -36,10 +36,7 @@ def discover_existing_jobs(db_api: TimescaleDBAPI):
     print("Discovering existing job tables...")
     discovered_jobs = []
     try:
-        # Assumes db_api has a method to list tables.
-        # Replace with actual implementation, might involve querying
-        # information_schema.tables LIKE 'job_batch_%' OR 'job_stream_%'
-        all_tables = db_api.list_all_tables() # You'll need to implement this method
+        all_tables = db_api.list_all_tables()
 
         prefix_batch = "job_batch_"
         prefix_stream = "job_stream_"
@@ -57,7 +54,6 @@ def discover_existing_jobs(db_api: TimescaleDBAPI):
 
             if job_type and job_name_part:
                 # Check if this job name is already known (e.g., from a concurrent start?)
-                # This basic check might not be necessary if startup runs before listener
                 is_known = any(j["name"] == job_name_part for j in backend_data["running-jobs"]) or \
                            any(j["name"] == job_name_part for j in backend_data["started-jobs"])
 
@@ -67,23 +63,21 @@ def discover_existing_jobs(db_api: TimescaleDBAPI):
                         "name": job_name_part,
                         "type": job_type,
                         "thread": None, # Explicitly None as the thread is lost
-                        "discovered_at_startup": True # Optional flag
+                        "discovered_at_startup": True
                     }
                     discovered_jobs.append(job_info)
 
     except Exception as e:
         print(f"Error discovering existing jobs: {e}")
 
-    # Add discovered jobs to the list (choose the appropriate list)
-    # Using running-jobs might be okay if you accept the implications
+    # Add discovered jobs to the list
     backend_data["running-jobs"].extend(discovered_jobs)
     print(f"Finished discovery. Total 'running' jobs now: {len(backend_data['running-jobs'])}")
 
 def main():
-    # Start a thread listening for requests
+    # Create a thread listening for requests
     listener_thread = threading.Thread(target=__request_listener)
     listener_thread.daemon = True
-    # listener_thread.start() # Start listener LATER, after DB init and discovery
 
     db_conn_params = {
         "user": DATABASE["USER"],
@@ -100,7 +94,7 @@ def main():
         # --- Run discovery AFTER db_api is initialized ---
         discover_existing_jobs(backend_data["db_api"])
 
-        # --- Now start the listener ---
+        # --- Start the listener ---
         listener_thread.start()
         print("Request listener started.")
 
@@ -113,40 +107,29 @@ def main():
     try:
         while True:
             # --- Main loop logic needs adjustment ---
-            # The original loop moved jobs from 'started' to 'running'.
-            # If 'started-jobs' is still used, that part can remain.
-            # However, jobs discovered at startup have thread=None,
-            # so checks like job["thread"].is_alive() will fail.
-
-            # Example adjusted loop (assuming you still use started-jobs briefly):
             current_started = list(backend_data["started-jobs"]) # Iterate over a copy
             for job in current_started:
                 if job.get("discovered_at_startup"): # Skip discovered jobs in this check
-                     continue
+                    continue
 
                 if job["type"] == "batch":
-                     # Check if the thread finished *if* it exists
+                    # Check if the thread finished *if* it exists
                     if job["thread"] and not job["thread"].is_alive():
                         print(f"Batch job '{job['name']}' thread finished. Moving to running-jobs.")
                         backend_data["running-jobs"].append(job)
                         backend_data["started-jobs"].remove(job)
                     # If thread is None (shouldn't happen for non-discovered), handle error?
                 elif job["type"] == "stream":
-                     # Check if table exists for newly started stream jobs
+                    # Check if table exists for newly started stream jobs
                     if backend_data["db_api"].table_exists(f"job_stream_{job['name']}"):
                         print(f"Stream job '{job['name']}' table found. Moving to running-jobs.")
                         backend_data["running-jobs"].append(job)
                         backend_data["started-jobs"].remove(job)
 
-            sleep(1) # Keep the sleep
+            sleep(1)
 
     except KeyboardInterrupt:
         print("Exiting backend...")
-    finally:
-        # Add cleanup if necessary (e.g., close db connection explicitly)
-        if backend_data.get("db_api"):
-            # backend_data["db_api"].close() # If your API has a close method
-            pass
 
 # Listens for incoming requests and handles them through the __handle_api_call function
 def __request_listener():
@@ -241,7 +224,7 @@ def __handle_api_call(conn, data: dict) -> None:
                 "database": DATABASE["DATABASE"]
             }
 
-            stream_thread = threading.Thread( # Renamed variable for clarity
+            stream_thread = threading.Thread(
                 target=execute_calls.run_stream,
                 args=(
                     db_conn_params,
@@ -251,8 +234,8 @@ def __handle_api_call(conn, data: dict) -> None:
                     speedup,
                     inj_params,
                     debug,
-                    label_column, # Pass label_column variable
-                    xai_params,    # Pass xai_params variable
+                    label_column,
+                    xai_params,
                     model_params
                 )
             )            
@@ -275,13 +258,13 @@ def __handle_api_call(conn, data: dict) -> None:
             try:
                 # --- Correctly parse the 'from_timestamp' ISO string ---
                 from_dt = datetime.fromisoformat(data["from_timestamp"])
-                print(f"Parsed from_timestamp: {from_dt}") # Optional: for debugging
+                print(f"Parsed from_timestamp: {from_dt}")
 
                 to_dt = None
                 if data["to_timestamp"] is not None:
-                    # --- Correctly parse the 'to_timestamp' ISO string (if provided) ---
+                    # --- Correctly parse the 'to_timestamp' ISO string ---
                     to_dt = datetime.fromisoformat(data["to_timestamp"])
-                    print(f"Parsed to_timestamp: {to_dt}") # Optional: for debugging
+                    print(f"Parsed to_timestamp: {to_dt}")
 
                 # Call the database function with the correct datetime objects
                 if to_dt is None:
@@ -290,7 +273,7 @@ def __handle_api_call(conn, data: dict) -> None:
                     df = backend_data["db_api"].read_data(from_dt, data["job_name"], to_dt)
 
                 # --- The rest of your data processing ---
-                # Check if DataFrame is empty before proceeding (optional but good practice)
+                # Check if DataFrame is empty before proceeding
                 if df is not None and not df.empty:
                     # Assuming 'timestamp' column exists and needs mapping/conversion
                     if "timestamp" in df.columns:
@@ -311,7 +294,7 @@ def __handle_api_call(conn, data: dict) -> None:
             except (ValueError, TypeError) as e:
                 # Catch errors during timestamp parsing (e.g., invalid format)
                 print(f"Error processing get-data request: Invalid timestamp format? {e}")
-                # Send an error response back to the client (optional but recommended)
+                # Send an error response back to the client
                 error_dict = {"error": f"Invalid timestamp format: {e}", "data": None}
                 error_json = json.dumps(error_dict)
                 try:
@@ -324,7 +307,7 @@ def __handle_api_call(conn, data: dict) -> None:
                 print(f"Error processing get-data request: {e}")
                 import traceback
                 traceback.print_exc() # Print full traceback for debugging
-                # Send an error response back to the client (optional but recommended)
+                # Send an error response back to the client
                 error_dict = {"error": f"Internal server error: {e}", "data": None}
                 error_json = json.dumps(error_dict)
                 try:

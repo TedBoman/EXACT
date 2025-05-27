@@ -33,7 +33,7 @@ class IsolationForestModel(model_interface.ModelInterface):
         contamination = kwargs.get('contamination', 'auto')
         max_samples = kwargs.get('max_samples', 'auto')
         max_features = kwargs.get('max_features', 1.0)
-        bootstrap = kwargs.get('bootstrap', False) # Note: sklearn default might change
+        bootstrap = kwargs.get('bootstrap', False)
         random_state = kwargs.get('random_state', None)
         n_jobs = kwargs.get('n_jobs', -1)
 
@@ -167,7 +167,7 @@ class IsolationForestModel(model_interface.ModelInterface):
         # Convert scores (lower=anomaly) to probabilities P(anomaly) ~ [0,1]
         # Needs careful scaling based on score distribution / offsets
         offset = getattr(self.model, 'offset_', 0) # Internal threshold related to contamination
-        # Simple sigmoid approach (needs tuning!)
-        prob_anomaly = 1 / (1 + np.exp(-(offset - scores) / np.std(scores))) # Example scaling
+        # Simple sigmoid approach
+        prob_anomaly = 1 / (1 + np.exp(-(offset - scores) / np.std(scores)))
         prob_normal = 1.0 - prob_anomaly
         return np.vstack([prob_normal, prob_anomaly]).T

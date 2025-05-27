@@ -23,7 +23,7 @@ class TimeSeriesExplainer:
                 outcome_name_for_dice: Optional[str] = None,
                 continuous_features_for_dice: Optional[List[str]] = None,
                 shap_method: str = None,
-                **kwargs # Keep kwargs for future flexibility
+                **kwargs # kwargs for future flexibility
                 ):
         """
         Initializes the TimeSeriesExplainer manager.
@@ -98,7 +98,6 @@ class TimeSeriesExplainer:
 
         # Add DiCE specific params with CORRECT names
         if method_key == "diceexplainer":
-            # *** YOU NEED TO ENSURE self._background_outcomes exists first ***
             # (e.g., by adding it as an __init__ parameter and passing it from execute_calls.py)
             if not hasattr(self, '_background_outcomes') or self._background_outcomes is None:
                 raise ValueError("TimeSeriesExplainer is missing '_background_outcomes' needed for DiceExplainer.")
@@ -183,7 +182,7 @@ class TimeSeriesExplainer:
             raise TypeError("TimeSeriesExplainer.explain requires instances_to_explain to be a NumPy ndarray.")
 
         try:
-            # Step 1: Get the specific explainer object (lazy initialization)
+            # Step 1: Get the specific explainer object
             explainer = self._get_or_initialize_explainer(method_name)
 
             # Step 2: Delegate to the specific object's explain method

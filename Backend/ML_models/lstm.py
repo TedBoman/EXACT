@@ -37,7 +37,7 @@ class LSTMModel(model_interface.ModelInterface):
         self.config = {
             'units': kwargs.get('units', 64),
             'activation': kwargs.get('activation', 'relu'),
-            'optimizer_name': kwargs.get('optimizer', 'adam'), # Store name or object
+            'optimizer_name': kwargs.get('optimizer', 'adam'),
             'learning_rate': kwargs.get('learning_rate', 0.001),
             'loss': kwargs.get('loss', 'mse'),
             'epochs': kwargs.get('epochs', 10), # Store training param
@@ -72,8 +72,8 @@ class LSTMModel(model_interface.ModelInterface):
         optimizer_name = self.config['optimizer_name']
         learning_rate = self.config['learning_rate']
         loss_function = self.config['loss']
-        dropout_rate = self.config.get('dropout', 0.0) # Get from stored config
-        rec_dropout_rate = self.config.get('recurrent_dropout', 0.0) # Get from stored config
+        dropout_rate = self.config.get('dropout', 0.0)
+        rec_dropout_rate = self.config.get('recurrent_dropout', 0.0)
         # ---
 
         if time_steps <= 0:
@@ -89,10 +89,10 @@ class LSTMModel(model_interface.ModelInterface):
         # --- Define Keras Model using config ---
         inputs = Input(shape=(self.sequence_length, features))
         encoded = LSTM(units, activation=activation, return_sequences=False,
-                    dropout=dropout_rate, recurrent_dropout=rec_dropout_rate)(inputs) # Add params
+                    dropout=dropout_rate, recurrent_dropout=rec_dropout_rate)(inputs)
         decoded = RepeatVector(self.sequence_length)(encoded)
         decoded = LSTM(units, activation=activation, return_sequences=True,
-                    dropout=dropout_rate, recurrent_dropout=rec_dropout_rate)(decoded) # Add params
+                    dropout=dropout_rate, recurrent_dropout=rec_dropout_rate)(decoded)
         outputs = TimeDistributed(Dense(features))(decoded)
 
         autoencoder = Model(inputs, outputs)
@@ -139,8 +139,8 @@ class LSTMModel(model_interface.ModelInterface):
         # print(f"Fitting model on {X_train.shape[0]} training sequences...")
         self.model.fit(
             X_train, X_train,
-            epochs=epochs,       # Use config
-            batch_size=batch_size, # Use config
+            epochs=epochs,       
+            batch_size=batch_size, 
             validation_split=0.2,
             verbose=1,
             shuffle=True
@@ -195,7 +195,7 @@ class LSTMModel(model_interface.ModelInterface):
         X: Optional[np.ndarray] = None # Initialize X
 
         if isinstance(input_data, pd.DataFrame):
-            # print("Preprocessing DataFrame...") # Optional print
+            # print("Preprocessing DataFrame...")
             if input_data.shape[1] != n_features_expected:
                 raise ValueError(f"Input DataFrame has {input_data.shape[1]} features, model expects {n_features_expected}.")
             try:
@@ -208,7 +208,7 @@ class LSTMModel(model_interface.ModelInterface):
                 raise RuntimeError(f"Failed to scale/sequence DataFrame: {e}") from e
 
         elif isinstance(input_data, np.ndarray):
-            # print(f"Preprocessing NumPy array with {input_data.ndim} dimensions...") # Optional print
+            # print(f"Preprocessing NumPy array with {input_data.ndim} dimensions...")
 
             # --- NEW: Handle 2D NumPy array ---
             if input_data.ndim == 2:
@@ -278,14 +278,14 @@ class LSTMModel(model_interface.ModelInterface):
         Returns:
             np.ndarray: 1D array of reconstruction errors per sequence (shape: (n_sequences,)).
         """
-        ## print("Calculating anomaly scores (reconstruction error)...") # Optional print
+        ## print("Calculating anomaly scores (reconstruction error)...")
         # Preprocess input data into scaled 3D sequences
         X = self._preprocess_and_create_sequences(detection_data)
 
         if X.size == 0: return np.array([]) # No sequences to score
 
         # Get reconstruction from autoencoder
-        ## print(f"Predicting reconstructions for {X.shape[0]} sequences...") # Optional print
+        ## print(f"Predicting reconstructions for {X.shape[0]} sequences...")
         try:
             reconstructed = self.model.predict(X)
         except Exception as e:
@@ -302,7 +302,7 @@ class LSTMModel(model_interface.ModelInterface):
             # Calculate reconstruction error (MSE per sequence)
             reconstruction_error = np.mean(np.square(X - reconstructed), axis=(1, 2))
 
-        ## print(f"Calculated {len(reconstruction_error)} scores.") # Optional print
+        ## print(f"Calculated {len(reconstruction_error)} scores.")
         return reconstruction_error # Return 1D scores
 
     # Detects anomalies and returns a list of boolean values

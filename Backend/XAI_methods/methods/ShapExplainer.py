@@ -88,7 +88,6 @@ class ShapExplainer(ExplainerMethodAPI):
                          n_outputs = 2 # Default to 2 for classification if check fails
                 return np.empty((0, n_outputs), dtype=float)
 
-
             try:
                 data_reshaped_3d = data_2d.reshape((num_samples,) + self._original_sequence_shape)
             except ValueError as e:
@@ -96,7 +95,7 @@ class ShapExplainer(ExplainerMethodAPI):
                 raise ValueError(f"Error reshaping data for model prediction in SHAP wrapper. Input shape: {data_2d.shape}, Target shape: {(num_samples,) + self._original_sequence_shape}. Error: {e}") from e
 
             predictions = None
-            # --- MODIFIED: Prioritize predict_proba for classification ---
+            # --- Prioritize predict_proba for classification ---
             if self.mode == 'classification' and hasattr(self.model, 'predict_proba') and callable(getattr(self.model, 'predict_proba')):
                 try:
                     # logger.debug(f"_predict_fn_shap calling wrapper.predict_proba for shape {data_reshaped_3d.shape}")
@@ -120,7 +119,6 @@ class ShapExplainer(ExplainerMethodAPI):
             else:
                  # logger.error("_predict_fn_shap: Neither predict_proba nor predict available on wrapped model.")
                  raise AttributeError("Model wrapper lacks both predict_proba and predict methods.")
-            # --- END MODIFICATION ---
 
             # Ensure output is 2D (n_samples, n_outputs)
             if predictions.ndim == 1:
@@ -137,7 +135,6 @@ class ShapExplainer(ExplainerMethodAPI):
         # Assign the function to the instance
         self._predict_fn_shap = _predict_fn_shap
         # logger.info("Internal prediction function (_predict_fn_shap) defined.")
-
 
         # --- Prepare Background Data Summary (Flattening) ---
         # logger.info("Preparing background data summary...")
@@ -176,7 +173,6 @@ class ShapExplainer(ExplainerMethodAPI):
                  # logger.error("Background summary data is None, cannot initialize KernelExplainer.")
                  raise ValueError("Failed to prepare background data summary for KernelExplainer.")
 
-
             # logger.info(f"Background data for KernelExplainer prepared. Shape: {background_summary_np.shape}")
 
             try:
@@ -197,24 +193,24 @@ class ShapExplainer(ExplainerMethodAPI):
             try:
                 raw_model = self.model.model # Accesses the @property in ModelWrapperForXAI
                 if raw_model is None:
-                     raise ValueError("Could not retrieve underlying model from wrapper.")
+                    raise ValueError("Could not retrieve underlying model from wrapper.")
                 # logger.info(f"Retrieved raw model of type: {type(raw_model)}")
             except AttributeError as e:
                  # logger.error(f"Failed to get raw model via wrapper property: {e}", exc_info=True)
                  raise AttributeError(
-                     "shap_method='tree' requires the 'model' wrapper instance "
-                     "to provide access to the raw tree model via its '.model' property."
+                    "shap_method='tree' requires the 'model' wrapper instance "
+                    "to provide access to the raw tree model via its '.model' property."
                  ) from e
 
             # Set model_output argument for TreeExplainer
             if self.mode == 'classification':
-                 # Use 'probability' for classification models that output probabilities
-                 self._shap_model_output = "probability"
-                 # logger.info(f"Mode is '{self.mode}', setting TreeExplainer model_output to '{self._shap_model_output}'")
-                 # --- REMOVED the check block that caused warnings ---
+                # Use 'probability' for classification models that output probabilities
+                self._shap_model_output = "probability"
+                # logger.info(f"Mode is '{self.mode}', setting TreeExplainer model_output to '{self._shap_model_output}'")
+                # --- REMOVED the check block that caused warnings ---
             else: # regression
-                 self._shap_model_output = "raw"
-                 # logger.info(f"Mode is '{self.mode}', setting TreeExplainer model_output to 'raw'")
+                self._shap_model_output = "raw"
+                # logger.info(f"Mode is '{self.mode}', setting TreeExplainer model_output to 'raw'")
 
             # TreeExplainer uses the flattened background data
             # logger.info("Using raw background data for SHAP TreeExplainer.")
@@ -228,7 +224,7 @@ class ShapExplainer(ExplainerMethodAPI):
                 # logger.info(f"Initialized TreeExplainer: {type(self._explainer)}")
             except Exception as e:
                 # logger.error(f"Error initializing shap.TreeExplainer. Ensure the raw model "
-                             #f"({type(raw_model)}) is supported (e.g., XGBoost, scikit-learn trees/forests). Error: {e}", exc_info=True)
+                            #  f"({type(raw_model)}) is supported (e.g., XGBoost, scikit-learn trees/forests). Error: {e}", exc_info=True)
                 raise RuntimeError("Failed to initialize TreeExplainer") from e
 
         # --- Add elif blocks for 'linear' and 'partition' if needed ---
@@ -243,7 +239,6 @@ class ShapExplainer(ExplainerMethodAPI):
             raise RuntimeError(f"Explainer object was not initialized for method '{self.shap_method}'.")
 
         # logger.info("ShapExplainer initialization complete.")
-
 
     @property
     def expected_value(self):
@@ -265,8 +260,8 @@ class ShapExplainer(ExplainerMethodAPI):
 
         if instances_to_explain.shape[1:] != self._original_sequence_shape:
              raise ValueError(
-                 f"Instance feature shape {instances_to_explain.shape[1:]} does not match "
-                 f"background data feature shape {self._original_sequence_shape}."
+                f"Instance feature shape {instances_to_explain.shape[1:]} does not match "
+                f"background data feature shape {self._original_sequence_shape}."
              )
 
         n_instances = instances_to_explain.shape[0]
@@ -311,8 +306,8 @@ class ShapExplainer(ExplainerMethodAPI):
                 reshaped_shap_values_list = []
                 for i, class_shap_values_flat in enumerate(shap_values_output):
                     if not isinstance(class_shap_values_flat, np.ndarray):
-                         # logger.warning(f"Item {i} in SHAP values list is not a NumPy array (type: {type(class_shap_values_flat)}). Skipping.")
-                         continue
+                        # logger.warning(f"Item {i} in SHAP values list is not a NumPy array (type: {type(class_shap_values_flat)}). Skipping.")
+                        continue
                     # Validate shape before reshaping
                     if class_shap_values_flat.shape != (n_instances, expected_flat_features):
                         warnings.warn(f"SHAP values for class {i} have unexpected flat shape {class_shap_values_flat.shape}. Expected ({n_instances}, {expected_flat_features}). Skipping reshape for this class.", RuntimeWarning)
@@ -321,9 +316,9 @@ class ShapExplainer(ExplainerMethodAPI):
                     try:
                         # Reshape only if original features were multi-dimensional (e.g., sequence)
                         if len(self._original_sequence_shape) > 1:
-                             reshaped_shap_values_list.append(class_shap_values_flat.reshape(target_shape))
+                            reshaped_shap_values_list.append(class_shap_values_flat.reshape(target_shape))
                         else: # If original features were 1D, keep flat
-                             reshaped_shap_values_list.append(class_shap_values_flat)
+                            reshaped_shap_values_list.append(class_shap_values_flat)
                     except ValueError as e:
                         raise ValueError(f"Failed to reshape SHAP values for class {i}. Flat shape: {class_shap_values_flat.shape}, Target shape: {target_shape}. Error: {e}") from e
                 # logger.info(f"Processed SHAP values list (items: {len(reshaped_shap_values_list)})")
@@ -343,17 +338,17 @@ class ShapExplainer(ExplainerMethodAPI):
                 # Now validate the potentially squeezed shape
                 selected_shap_values = None
                 if shap_values_flat.ndim == 2 and shap_values_flat.shape == (n_instances, expected_flat_features):
-                     # logger.debug("Assuming 2D array output is for the target class/output.")
-                     selected_shap_values = shap_values_flat
+                    # logger.debug("Assuming 2D array output is for the target class/output.")
+                    selected_shap_values = shap_values_flat
                 elif shap_values_flat.ndim == 3 and shap_values_flat.shape[0] == n_instances and \
-                     shap_values_flat.shape[1] == expected_flat_features and shap_values_flat.shape[2] > 1:
-                     # Handle multi-class output returned as single array
-                     class_index_to_use = 1 if shap_values_flat.shape[2] == 2 else 0 # Default to class 1 for binary
-                     # logger.warning(f"SHAP values ndarray has shape {shap_values_flat.shape}. Selecting class index {class_index_to_use}.")
-                     selected_shap_values = shap_values_flat[:, :, class_index_to_use]
+                    shap_values_flat.shape[1] == expected_flat_features and shap_values_flat.shape[2] > 1:
+                    # Handle multi-class output returned as single array
+                    class_index_to_use = 1 if shap_values_flat.shape[2] == 2 else 0 # Default to class 1 for binary
+                    # logger.warning(f"SHAP values ndarray has shape {shap_values_flat.shape}. Selecting class index {class_index_to_use}.")
+                    selected_shap_values = shap_values_flat[:, :, class_index_to_use]
                 else:
-                     # Unexpected shape
-                     raise ValueError(f"SHAP values ndarray has unexpected shape {shap_values_flat.shape} after potential squeeze. Expected ({n_instances}, {expected_flat_features}) or ({n_instances}, {expected_flat_features}, n_classes > 1).")
+                    # Unexpected shape
+                    raise ValueError(f"SHAP values ndarray has unexpected shape {shap_values_flat.shape} after potential squeeze. Expected ({n_instances}, {expected_flat_features}) or ({n_instances}, {expected_flat_features}, n_classes > 1).")
 
                 if selected_shap_values is None:
                     raise RuntimeError("Internal error: selected_shap_values is None after checks.")
@@ -373,7 +368,7 @@ class ShapExplainer(ExplainerMethodAPI):
                     reshaped_result = selected_shap_values # Already (N, Features)
 
             else:
-                 raise TypeError(f"Unexpected type returned by explainer.shap_values: {type(shap_values_output)}")
+                raise TypeError(f"Unexpected type returned by explainer.shap_values: {type(shap_values_output)}")
 
             return reshaped_result
 

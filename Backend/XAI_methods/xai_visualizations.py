@@ -1,5 +1,3 @@
-# File: xai_visualizations.py
-
 import traceback
 import shap
 import dice_ml
@@ -15,11 +13,9 @@ def process_and_plot_shap(
     results: Any,                      # Expect np.ndarray or list[np.ndarray] from ShapExplainer.explain
     explainer_object: Any,             # The specific ShapExplainer instance (to get expected_value)
     instances_explained: np.ndarray,   # 3D numpy array (n, seq, feat) that was explained
-    original_labels: Union[np.ndarray, pd.Series], # Unused in this snippet, but kept for signature consistency
     feature_names: List[str],          # Base feature names (e.g., ['Temp', 'Pressure'])
     sequence_length: int,
     output_dir: str,
-    mode: str,                         # 'classification' or 'regression'
     class_index_to_plot: int = 0,      # Default class to plot for classification
     max_display_features: int = 20,
     job_name='none',
@@ -120,7 +116,6 @@ def process_and_plot_shap(
     #else: # expected_value_for_plot is None, but we might still make some plots like summary
         #print("expected_value_for_plot is None. Waterfall and Force plots requiring base values will be skipped or may error.")
 
-
     # --- Summary Plot (Dot) ---
     if shap_values_flat is not None and features_flat_np is not None:
         try:
@@ -160,7 +155,6 @@ def process_and_plot_shap(
     # elif expected_value_for_plot is None: # print("Skipping Waterfall plot: expected_value not available.")
     # elif not shap_explanation : # print("Skipping Waterfall plot: shap.Explanation object not available.")
     # elif n_instances_explained == 0: # print("Skipping Waterfall plot: no instances to plot.")
-
 
     # --- Heatmap Plot ---
     if shap_explanation:
@@ -217,22 +211,22 @@ def process_and_plot_shap(
 # --- LIME Handler ---
 def process_and_plot_lime(
      results: Any,                       # Expect LIME Explanation object
-     explainer_object: Any,              # The specific LimeExplainer instance
-     instances_explained: np.ndarray,    # Should be shape (1, seq, feat) for LIME
+     explainer_object: Any,              
+     instances_explained: np.ndarray,    
      original_labels: Union[np.ndarray, pd.Series],
-     feature_names: List[str],           # Base feature names
+     feature_names: List[str],           
      sequence_length: int,
      output_dir: str,
      mode: str,
-     instance_index: int = 0,            # Index if looping outside
+     instance_index: int = 0,            
      job_name='none',
      **kwargs):
      """Processes LIME results and generates standard plots/output."""
      # print(f"--- Processing and Plotting LIME Results for Instance Index {instance_index} ---")
 
      if results is None:
-         # print("LIME results object is None. Skipping.")
-         return
+        # print("LIME results object is None. Skipping.")
+        return
      
      output_dir = output_dir+'/'+job_name+'/LIME'
 
@@ -253,19 +247,19 @@ def process_and_plot_lime(
      except Exception as e:
         print(f"Failed to process/save LIME results for instance {instance_index}: {e}")
 
-     # print("--- Finished LIME Plotting ---")
+    # print("--- Finished LIME Plotting ---")
 
 def process_and_plot_dice(
-    results: Any, # Expect dice_ml.CounterfactualExplanations object for ONE original instance
+    results: Any, # Expect dice_ml.CounterfactualExplanations object
     explainer_object: Any, 
-    instances_explained: np.ndarray, # 3D numpy array (1, seq_len, features) for the ONE original instance
-    original_labels: Union[np.ndarray, pd.Series, List], # Label for the ONE original instance
+    instances_explained: np.ndarray,
+    original_labels: Union[np.ndarray, pd.Series, List],
     feature_names: List[str], 
     sequence_length: int,
-    output_dir: str, # This is base output dir, will append /job_name/DiCE
+    output_dir: str,
     mode: str,
     job_name: str = "job",
-    instance_index: int = 0, # This is the index from XAIRunner's loop, used for unique filenames
+    instance_index: int = 0,
     **kwargs
 ):
     # print(f"--- Processing DiCE for instance_index (from XAIRunner loop): {instance_index} ---")
@@ -294,7 +288,7 @@ def process_and_plot_dice(
         if len(results.cf_examples_list) > 1:
             warnings.warn(f"DiCE results.cf_examples_list has {len(results.cf_examples_list)} items. Expected 1 for single instance explanation. Using the first one.", RuntimeWarning)
         
-        cf_example_for_this_instance = results.cf_examples_list[0] # Get the (only) DiceCFExamples
+        cf_example_for_this_instance = results.cf_examples_list[0]
 
         # --- Get Counterfactuals DataFrame ---
         cfs_df = None
@@ -355,7 +349,7 @@ def process_and_plot_dice(
                 cfs_df[outcome_name] = pd.NA # Or predicted outcome from CFs if available
         
         # Ensure 'type' is in target_cols
-        if 'type' not in target_cols: # Should not happen as we add it
+        if 'type' not in target_cols: # Should not happen
             target_cols.insert(0, 'type')
 
 

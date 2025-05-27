@@ -36,7 +36,7 @@ def get_model(model, **model_params):
             svc_instance = SGDClassifier.SGDLinearModel(**model_params)
             return svc_instance
 
-        # Add a default case to handle unknown model types gracefully
+        # Default case to handle unknown model types gracefully
         case _:
              raise ValueError(f"Unknown model type requested: {model}")
             
