@@ -203,11 +203,16 @@ class BatchImporter:
         dl.debug_print("Dropped unnamed columns.")
         # --- End Drop Unnamed Columns ---
         
-        #Time column renaming
-        original_first_col_name = full_df.columns[0]
-        if original_first_col_name != 'timestamp':
-            dl.debug_print(f"Renaming first column '{original_first_col_name}' to 'timestamp'.")
-            full_df.columns.values[0] = "timestamp"
+        rename_map = {}
+        if label_col_name != 'label':
+            rename_map[label_col_name] = 'label'
+        if timestamp_col_name != 'timestamp':
+            rename_map[timestamp_col_name] = 'timestamp'
+
+        # --- Perform Renaming Operation ---
+        if rename_map: # Only rename if there's anything to rename
+            full_df = full_df.rename(columns=rename_map)
+            dl.debug_print("Label column renaming applied.")
         
         # --- DataFrame Timestamp Conversion ---
         if 'timestamp' in full_df.columns:
@@ -244,16 +249,6 @@ class BatchImporter:
 
         dl.debug_print("Sample of DataFrame after all timestamp processing (should be datetime64[ns, UTC]):")
         dl.debug_print(full_df.head())
-        
-        # print(f"renaming columns '{label_col_name}'")
-        rename_map = {}
-        if label_col_name != 'label':
-            rename_map[label_col_name] = 'label'
-
-        # --- Perform Renaming Operation ---
-        if rename_map: # Only rename if there's anything to rename
-            full_df = full_df.rename(columns=rename_map)
-            dl.debug_print("Label column renaming applied.")
             
         # --- Label Column Conversion to 0/1 ---
         if 'label' in full_df.columns:

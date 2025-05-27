@@ -417,7 +417,7 @@ def run_batch(
     df_eval = pd.DataFrame()
     actual_label_col = label_column or 'label' # Use provided or default 'label'
     sequence_length = None # Initialize
-    timestamp_col_name = time_column if time_column != None else 'timestamp'
+    timestamp_col_name = 'timestamp'
     xai_runner_instance = None
 
     try:
@@ -492,7 +492,7 @@ def run_batch(
 
         sim_engine = se()
         # Pass the actual label column name to the simulator if it uses it
-        result = sim_engine.main(db_conn_params=db_conn_params, job=batch_job, timestamp_col_name=None, label_col_name=actual_label_col)
+        result = sim_engine.main(db_conn_params=db_conn_params, job=batch_job, timestamp_col_name=time_column, label_col_name=actual_label_col)
         sim_end_time = time.perf_counter()
         sim_duration = sim_end_time - sim_start_time # Use sim_start_time
         # print(f"Batch import/simulation took {sim_duration:.2f}s")
