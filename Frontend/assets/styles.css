@@ -1,6 +1,3 @@
-/* assets/styles.css */
-
-/* Style for number inputs */
 input[type="number"] {
     padding: 8px 10px;         /* Add some internal spacing */
     border: 1px solid #555;    /* Define a border */
@@ -11,9 +8,6 @@ input[type="number"] {
     box-sizing: border-box;    /* Include padding and border in the element's total width and height */
     transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition on focus */
     vertical-align: middle;
-    /* Ensure width is handled correctly - maybe remove fixed width here
-      or use max-width */
-    /* width: 150px; /* You might set this inline if widths need to vary */
   }
 
 /* Style for text inputs (add if you have them, e.g., Job Name) */
@@ -26,10 +20,8 @@ input[type="text"] {
   font-size: 15px;
   box-sizing: border-box;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  /* width: 200px; /* Example: Set inline if needed */
 }
 
-/* Optional: Add a focus style for better UX */
 input[type="number"]:focus,
 input[type="text"]:focus,
 input[type="password"]:focus {
@@ -38,7 +30,6 @@ input[type="password"]:focus {
   outline: none; /* Remove default browser outline */
 }
 
-/* Optional: Style for disabled inputs */
 input:disabled {
     background-color: #e0e0e0;
     cursor: not-allowed;
@@ -49,59 +40,52 @@ input:disabled {
   color: #ffffff;
 }
 
-/* Target labels inside the model settings panel */
+
 #model-settings-panel label {
-  font-size: 18px;  /* Increase font size (adjust as needed) */
-  color: #ffffff;    /* Set desired color (e.g., white) */
-  font-weight: 500; /* Slightly bolder maybe? (options: normal, bold, 400, 500, 600, etc.) */
-  /* Keep layout styles if they were consistent, otherwise define them here */
-  display: inline-block; /* Or block, depending on your layout */
-  width: 210px;        /* Example width, adjust if needed */
-  margin-right: 5px;   /* Spacing */
+  font-size: 18px;  /* Increase font size */
+  color: #ffffff;    /* Set desired color */
+  font-weight: 500; /* Slightly bolder (options: normal, bold, 400, 500, 600, etc.) */
+  display: inline-block; /* Or block, depending on layout */
+  width: 210px;
+  margin-right: 5px;
   vertical-align: middle; /* Align with inputs */
-  /* Add any other consistent styling */
 }
 
-/* Target labels inside the XAI settings panel (if you want similar styling) */
 #xai-settings-panel label {
   font-size: 18px;
   color: #ffffff;
   font-weight: 500;
   display: inline-block;
-  width: 180px; /* Adjust width if different */
+  width: 180px; 
   margin-right: 5px;
   vertical-align: middle;
-  /* Add any other consistent styling */
 }
 
-/* Increase font size in explanation boxes */
+
 #parameter-explanation-box,
 #xai-explanation-box {
-  font-size: 1rem; /* Adjust this value as needed */
-  line-height: 1.6; /* Improve readability */
+  font-size: 1rem; 
+  line-height: 1.6; 
 }
 
-/* You might also want to style specific elements within the boxes if needed */
+
 #parameter-explanation-box p,
 #xai-explanation-box p {
-  /* Add specific paragraph styling here if default isn't enough */
   font-size: 0.9rem;
   margin-bottom: 0.5rem; /* Add some space between paragraphs */
 }
 
-/* Style headings within the explanation boxes if you add them later */
-#parameter-explanation-box h4, /* Example heading */
+
+#parameter-explanation-box h4, 
 #xai-explanation-box h4 {
   font-size: 1.2rem; /* Make headings slightly larger */
   margin-top: 1rem;
   margin-bottom: 0.5rem;
-  color: #ffffff; /* Example color */
+  color: #ffffff;
 }
-
-/* Style headings within the explanation boxes if you add them later */
 h5 {
   font-size: 1.1rem; /* Make headings slightly larger */
   margin-top: 1rem;
   margin-bottom: 0.5rem;
-  color: #ffffff; /* Example color */
+  color: #ffffff; 
 }

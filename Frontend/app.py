@@ -1,16 +1,14 @@
-# app.py 
+
 import dash
 from dash import dcc, html, Input, Output, State
 import os
 import flask
 import urllib.parse
 from dotenv import load_dotenv
-
 from pages.index import layout as index_layout
 from pages.job_page import layout as job_layout
 from callbacks import get_index_callbacks 
 from job_page_callbacks import register_job_page_callbacks
-
 from get_handler import get_handler
 
 load_dotenv()
@@ -31,7 +29,7 @@ def serve_xai_asset(resource):
     safe_path = os.path.abspath(os.path.join(XAI_DIR, resource))
     if not safe_path.startswith(os.path.abspath(XAI_DIR)):
         print(f"Forbidden access attempt: {resource}")
-        return flask.abort(403) # Forbidden
+        return flask.abort(403) 
 
     # Check if file exists before trying to send
     if not os.path.isfile(safe_path):
@@ -65,7 +63,7 @@ handler = get_handler()
     Input("url", "pathname"),
 )
 def display_page(pathname):
-    print(f"Routing: Pathname received: {pathname}") # Debugging line
+    #print(f"Routing: Pathname received: {pathname}") # Debugging line
     if pathname == "/":
         print("Routing to index page")
         return index_layout(handler)
@@ -99,4 +97,4 @@ register_job_page_callbacks(app)
 if __name__ == "__main__":
     print(f"Starting the Dash server on http://0.0.0.0:{FRONTEND_PORT}")
     # Set debug=False for production if needed, True is useful for development
-    app.run(debug=True, host="0.0.0.0", port=FRONTEND_PORT)
+    app.run(debug=False, host="0.0.0.0", port=FRONTEND_PORT)

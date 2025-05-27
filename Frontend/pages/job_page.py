@@ -1,4 +1,3 @@
-# pages/job_page.py
 from dash import dcc, html
 import plotly.graph_objects as go
 
@@ -28,7 +27,7 @@ def layout(handler, job_name):
     display_name = get_display_job_name(job_name)
     print(f"Generating layout for job: {display_name}")
 
-    # --- Theme Colors (example, adjust if you have specific values) ---
+    # --- Theme Colors ---
     theme_colors = {
         'background': '#0D3D66',
         'header_background': '#1E3A5F',
@@ -61,16 +60,15 @@ def layout(handler, job_name):
                     "<< Back",
                     id="back-to-home-button",
                     n_clicks=0,
-                    # <<< Updated Button Style >>>
                     style={
-                        'backgroundColor': theme_colors['status_background'], # Match status bg or another theme color
+                        'backgroundColor': theme_colors['status_background'],
                         'color': theme_colors['text_dark'], # Use white/light text
                         'border': f"1px solid {theme_colors['border_light']}", # Subtle border
                         'borderRadius': '5px',         # Match other elements
                         'padding': '6px 12px',         # Padding
                         'fontSize': '14px',            # Font size
                         'cursor': 'pointer',           # Cursor
-                        'fontWeight': 'bold'           # Make text bolder maybe?
+                        'fontWeight': 'bold'           # Make text bold
                     }
                 )
             # Style for the left column div
@@ -126,7 +124,7 @@ def layout(handler, job_name):
 
         # --- Main Content Area ---
         html.Div([
-            # Status Display (Using theme colors)
+            # Status Display
             html.Div(id='job-status-display', style={
                 'marginBottom': '15px', 'padding': '10px',
                 'border': f"1px solid {theme_colors['border_light']}",
@@ -155,11 +153,6 @@ def layout(handler, job_name):
                             'width': '100%',
                             'color': theme_colors['text_black'], # Text color inside input box (e.g. "Select...")
                         },
-                        # To style the dropdown menu (options list), you might need external CSS
-                        # targeting classes like .Select-menu-outer, .Select-option
-                        # However, Dash dcc.Dropdown has limited direct styling for the menu itself.
-                        # For the input part of the dropdown:
-                        # className='custom-dropdown-input' # if you want to use CSS file
                     ),
                 ], style={'marginBottom': '15px', 'padding': '10px', 'backgroundColor': 'rgba(40,40,40,0.3)', 'borderRadius': '5px'}),
                 
@@ -171,12 +164,10 @@ def layout(handler, job_name):
                 html.H3("Explainability (XAI) Results", style={'color': '#C0C0C0'}),
                 # Container where the callback will inject results
                 html.Div(id='xai-results-content', children="Checking for XAI results...")
-            ], id='xai-results-section', style={'display': 'block', 'marginBottom': '20px'}), # Keep visible initially or control via callback
+            ], id='xai-results-section', style={'display': 'block', 'marginBottom': '20px'}), 
 
-            # Other plots placeholder
             html.Div(id='other-plots-section')
 
         ], style={'padding': '20px', 'backgroundColor': theme_colors['content_background'], 'borderRadius': '10px'}),
 
-    # Using theme colors
     ], style={'padding': '30px', 'backgroundColor': theme_colors['background'], 'minHeight': '100vh'})

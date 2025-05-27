@@ -7,9 +7,13 @@ from XAI_methods.methods.ShapExplainer import ShapExplainer
 from XAI_methods.methods.LimeExplainer import LimeExplainer
 from XAI_methods.methods.DiceExplainer import DiceExplainer
 
-from explainer_method_api import ExplainerMethodAPI
-
-
+# Import the base API
+try:
+    from explainer_method_api import ExplainerMethodAPI
+except ImportError:
+    # Define a dummy 
+    import abc
+    class ExplainerMethodAPI(abc.ABC): pass
 
 def xai_factory(
     method_name: str,               # Input: "shap", "lime", etc.
