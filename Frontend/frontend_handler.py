@@ -4,7 +4,6 @@ import traceback
 import pandas as pd
 import json
 from io import StringIO
-
 from api import BackendAPI
 
 class FrontendHandler:
@@ -176,7 +175,6 @@ class FrontendHandler:
              self.api.import_dataset(file_path, timestamp_column)
         except Exception as e:
              print(f"Error calling self.api.import_dataset: {e}")
-             # Decide how to signal error - raise? return status?
 
 
     def handle_get_all_jobs(self):

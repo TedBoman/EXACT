@@ -1,6 +1,6 @@
 import os
 from typing import Dict, Optional
-import plotly.graph_objects as go # Ensure this is imported
+import plotly.graph_objects as go 
 import pandas as pd
 
 def plot_aggregated_feature_importance_comparison(
@@ -66,7 +66,7 @@ def plot_aggregated_feature_importance_comparison(
         title=plot_title,
         xaxis_title="Features",
         yaxis_title="Aggregated Importance Score",
-        barmode='group', # Group bars for each feature
+        barmode='group', 
         legend_title_text="XAI Method",
         template='seaborn',
         xaxis_tickangle=-45, # Angle feature names if many
@@ -75,7 +75,7 @@ def plot_aggregated_feature_importance_comparison(
 
     # --- Save Plot ---
     # Save it in the main job XAI directory, not under a specific method
-    plot_output_dir = os.path.join(output_dir) # output_dir should be /data/job_name already
+    plot_output_dir = os.path.join(output_dir) 
     os.makedirs(plot_output_dir, exist_ok=True)
     plot_filepath = os.path.join(plot_output_dir, f"{job_name}_feature_importance_comparison.html")
 

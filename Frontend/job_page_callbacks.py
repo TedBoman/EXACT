@@ -1,9 +1,7 @@
-# job_page_callbacks.py
 import json
 import sys
 import os
 import urllib.parse
-
 import numpy as np
 import dash
 from dash import dcc, html, Input, Output, State, callback, no_update, dash_table
@@ -16,9 +14,7 @@ from pages.job_page import get_display_job_name
 from get_handler import get_handler 
 from visualisations.feature_importance_plot import plot_aggregated_feature_importance_comparison
 
-# --- Ensure XAI_DIR is consistent with app.py ---
 XAI_DIR = "/app/data" # The path INSIDE the container
-# ---------------------------------------------
 
 # --- Helper Function to Generate Asset URL ---
 def get_asset_url(job_name, method_name, filename):
@@ -226,11 +222,11 @@ def create_performance_metrics_explanation(metrics_data: dict, theme_colors: dic
         if key in metrics_data:
             value = metrics_data[key]
             metric_detail_elements.append(html.Div([
-                html.Strong(f"{detail['name']}: ", style={'color': 'white'}), # Text color: white
-                html.Span(str(value), style={'color': 'white', 'fontWeight': 'bold'}), # Text color: white
+                html.Strong(f"{detail['name']}: ", style={'color': 'white'}), 
+                html.Span(str(value), style={'color': 'white', 'fontWeight': 'bold'}), 
                 html.P(detail["description"], style={
                     'fontSize': '1.2em',
-                    'color': 'white', # Text color: white
+                    'color': 'white', 
                     'marginTop': '3px',
                     'marginBottom': '10px',
                     'marginLeft': '10px'
@@ -277,11 +273,11 @@ def create_performance_metrics_explanation(metrics_data: dict, theme_colors: dic
             value = metrics_data[key]
             value_display = f"{value:.4f}" if isinstance(value, float) else str(value)
             metric_detail_elements.append(html.Div([
-                html.Strong(f"{detail['name']}: ", style={'color': 'white'}), # Text color: white
-                html.Span(value_display, style={'color': 'white', 'fontWeight': 'bold'}), # Text color: white
+                html.Strong(f"{detail['name']}: ", style={'color': 'white'}), 
+                html.Span(value_display, style={'color': 'white', 'fontWeight': 'bold'}), 
                 html.P(detail["description"], style={
                     'fontSize': '1.1em',
-                    'color': 'white', # Text color: white
+                    'color': 'white', 
                     'marginTop': '3px',
                     'marginLeft': '10px'
                 }),
@@ -289,7 +285,7 @@ def create_performance_metrics_explanation(metrics_data: dict, theme_colors: dic
                              mathjax=True, # Good to keep for explicitness
                              style={
                                  'fontSize': '1.2em',  # Increased font size for equations
-                                 'color': 'white',    # Text color: white
+                                 'color': 'white',    
                                  'marginBottom': '10px',
                                  'marginLeft': '10px'
                              })
@@ -303,7 +299,7 @@ def create_performance_metrics_explanation(metrics_data: dict, theme_colors: dic
         html.Summary(
             "Performance Metrics Definitions",  # This is the clickable title
             style={
-                'color': 'white',  # Text color: white
+                'color': 'white',  
                 'fontWeight': 'bold',
                 'fontSize': '1.1em', # Header-like font size
                 'cursor': 'pointer',
@@ -446,7 +442,7 @@ def create_cfe_delta_table(file_path):
                         # Add style condition to highlight this changed cell
                         style_conditions.append({
                             'if': {'row_index': cf_idx, 'column_id': col},
-                            'backgroundColor': '#3D9970', # Teal-ish highlight
+                            'backgroundColor': '#3D9970', 
                             'color': 'white',
                             'fontWeight': 'bold'
                         })
@@ -640,35 +636,16 @@ def register_job_page_callbacks(app):
                     display_elements.append(create_info_section("Performance Metrics (Testing data only)", metrics, theme_colors))
                     
                 # 4. Execution Times
-                exec_times_prefix = "execution_time_"
-                xai_method_time_prefix = "execution_time_xai_"
-                xai_method_time_suffix = "_seconds"
-
-                general_exec_times = {
-                    "Total (s)": metadata.get(f"{exec_times_prefix}total_seconds"),
-                    "Simulation (s)": metadata.get(f"{exec_times_prefix}simulation_seconds"),
-                    "Training (s)": metadata.get(f"{exec_times_prefix}training_seconds"),
-                    "Detection (s)": metadata.get(f"{exec_times_prefix}detection_seconds"),
-                    "XAI Overall (s)": metadata.get(f"{exec_times_prefix}xai_seconds") # Renamed for clarity
+                exec_times = {
+                    "Total (s)": metadata.get("execution_time_total_seconds"),
+                    "Simulation (s)": metadata.get("execution_time_simulation_seconds"),
+                    "Training (s)": metadata.get("execution_time_training_seconds"),
+                    "Detection (s)": metadata.get("execution_time_detection_seconds"),
+                    "XAI (s)": metadata.get("execution_time_xai_seconds")
                 }
-                general_exec_times_filtered = {k: v for k, v in general_exec_times.items() if v is not None}
-                if general_exec_times_filtered:
-                    display_elements.append(create_info_section("Overall Execution Times", general_exec_times_filtered, theme_colors))
-
-                # New section for Individual XAI Method Execution Times
-                individual_xai_exec_times = {}
-                for key, value in metadata.items():
-                    if key.startswith(xai_method_time_prefix) and key.endswith(xai_method_time_suffix):
-                        # Extract method name for a cleaner display key
-                        method_name_part = key[len(xai_method_time_prefix):-len(xai_method_time_suffix)]
-                        # Capitalize method name if it's simple (e.g., shap -> Shap)
-                        # or handle multi-word like LimeExplainer -> Lime Explainer
-                        display_method_name = ' '.join(word.capitalize() for word in method_name_part.replace('_', ' ').split(' '))
-                        individual_xai_exec_times[f"{display_method_name} (s)"] = value
-                
-                individual_xai_exec_times_filtered = {k: v for k, v in individual_xai_exec_times.items() if v is not None}
-                if individual_xai_exec_times_filtered:
-                    display_elements.append(create_info_section("Individual XAI Method Times", individual_xai_exec_times_filtered, theme_colors))
+                exec_times_filtered = {k: v for k, v in exec_times.items() if v is not None}
+                if exec_times_filtered:
+                    display_elements.append(create_info_section("Execution Times", exec_times_filtered, theme_colors))
 
                 # 5. Model Parameters (collapsible)
                 model_params = metadata.get("model_params")
@@ -863,8 +840,6 @@ def register_job_page_callbacks(app):
         if not stored_data_json: 
             print("(Feature Selector CB) No data in store (stored_data_json is None or empty). Clearing dropdown.")
             return [], []
-        
-        # print(f"(Feature Selector CB) stored_data_json (first 500 chars): {str(stored_data_json)[:500]}") 
 
         try:
             df = pd.read_json(StringIO(stored_data_json), orient='split')
@@ -906,8 +881,7 @@ def register_job_page_callbacks(app):
         [State('job-page-job-name-store', 'data')]
     )
     def update_graph_from_data(stored_data_json, selected_features, job_name):
-        print(f"(Graph Update CB) ENTERED for job '{job_name}'. stored_data_json is None: {stored_data_json is None}") # DIAGNOSTIC
-        # print(f"(Graph Update CB) Selected features: {selected_features}") # DIAGNOSTIC
+        #print(f"(Graph Update CB) ENTERED for job '{job_name}'. stored_data_json is None: {stored_data_json is None}") # DIAGNOSTIC
         sys.stdout.flush()
         job_title_name = get_display_job_name(job_name) if job_name else "No Job Selected"
         fig = go.Figure(layout=go.Layout(
@@ -991,14 +965,14 @@ def register_job_page_callbacks(app):
             fig.layout.annotations = [] if fig.layout.annotations is None else list(fig.layout.annotations)
             fig.layout.shapes = []
             
-            print(f"(Graph Update CB) Final x_axis_source_name: '{x_axis_source_name}', is_timestamp_axis: {is_timestamp_axis}") # DIAGNOSTIC
-            if not x_axis_data.empty:
-                print(f"(Graph Update CB) x_axis_data head: \n{x_axis_data.head()}") # DIAGNOSTIC
-                print(f"(Graph Update CB) x_axis_data tail: \n{x_axis_data.tail()}") # DIAGNOSTIC
-                print(f"(Graph Update CB) x_axis_data NaNs: {x_axis_data.isna().sum()} out of {len(x_axis_data)}") # DIAGNOSTIC
-            else:
-                print("(Graph Update CB) x_axis_data is empty!") # DIAGNOSTIC
-            sys.stdout.flush()
+            #print(f"(Graph Update CB) Final x_axis_source_name: '{x_axis_source_name}', is_timestamp_axis: {is_timestamp_axis}") # DIAGNOSTIC
+            #if not x_axis_data.empty:
+                #print(f"(Graph Update CB) x_axis_data head: \n{x_axis_data.head()}") # DIAGNOSTIC
+                #print(f"(Graph Update CB) x_axis_data tail: \n{x_axis_data.tail()}") # DIAGNOSTIC
+                #print(f"(Graph Update CB) x_axis_data NaNs: {x_axis_data.isna().sum()} out of {len(x_axis_data)}") # DIAGNOSTIC
+            #else:
+                #print("(Graph Update CB) x_axis_data is empty!") # DIAGNOSTIC
+            #sys.stdout.flush()
 
             # --- Plotting Traces ---
 
@@ -1068,7 +1042,7 @@ def register_job_page_callbacks(app):
                     x_start_zoom = x_axis_data.iloc[0]
                     x_end_zoom = x_axis_data.iloc[INITIAL_POINTS_TO_SHOW - 1]
                     
-                    print(f"(Graph Update CB) Initial calculated zoom range: [{x_start_zoom}, {x_end_zoom}]") # DIAGNOSTIC
+                    #print(f"(Graph Update CB) Initial calculated zoom range: [{x_start_zoom}, {x_end_zoom}]") # DIAGNOSTIC
                     sys.stdout.flush()
                     
                     if pd.notna(x_start_zoom) and pd.notna(x_end_zoom):
@@ -1102,7 +1076,7 @@ def register_job_page_callbacks(app):
             fig.update_layout(title=f'Error Displaying Data', xaxis={'visible':False}, yaxis={'visible':False})
             sys.stdout.flush()
 
-        print(f"(Graph Update CB) Returning figure. Traces: {len(fig.data)}, Annotations: {len(fig.layout.annotations)}, Shapes: {len(fig.layout.shapes)}") # DIAGNOSTIC
+        #print(f"(Graph Update CB) Returning figure. Traces: {len(fig.data)}, Annotations: {len(fig.layout.annotations)}, Shapes: {len(fig.layout.shapes)}") # DIAGNOSTIC
         sys.stdout.flush()
         return fig
     
@@ -1217,7 +1191,6 @@ def register_job_page_callbacks(app):
                     method_file_components.append(html.P(f"Error processing results for {method_name}: {e}", style={'color':'red'}))
 
                 #print(f"method_file_components (after last append): {method_file_components}")
-                # Create a block for this method if it has any components (even error messages)
                 if method_file_components:
                     xai_content_blocks.append(html.Div([
                         # Method Title
@@ -1262,7 +1235,6 @@ def register_job_page_callbacks(app):
                             # found_any_results = True # No longer solely rely on found_any_results
                         else:
                             print(f"(XAI Display CB) Comparison plot HTML NOT found at {expected_comparison_plot_path} after calling plot function.")
-                            # Optionally add a message to xai_content_blocks if plot failed to generate
                             # xai_content_blocks.append(html.P("Failed to generate comparison plot.", style={'color':'orange'}))
                     else:
                         print("(XAI Display CB) aggregated_scores_data loaded but was empty.")

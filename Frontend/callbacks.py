@@ -1,5 +1,3 @@
-# callbacks.py (Complete and Updated File)
-
 import base64
 import re
 import sys
@@ -58,7 +56,7 @@ def create_active_jobs(active_jobs):
                 style={
                     "fontSize": "12px",
                     "backgroundColor": "#e74c3c", # Red button color
-                    "color": "#ffffff", # White text
+                    "color": "#ffffff", 
                     "border": "none",
                     "borderRadius": "5px",
                     "padding": "5px 10px", # Slightly more padding
@@ -414,7 +412,6 @@ def get_index_callbacks(app):
 
         # Define settings based on selected_model
         if selected_model == "XGBoost":
-                # Based on XGBoostModel in XGBoost.py which uses xgb.XGBClassifier
             settings_children.extend([
                 html.Div([
                     html.Label("Auto Tune:", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight": "10px", "display": "inline-block", "width": "180px"}),
@@ -429,7 +426,7 @@ def get_index_callbacks(app):
                 html.Div([
                     html.Label("Num Estimators (n_estimators):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "210px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'n_estimators'},
-                                type="number", value=100, min=10, step=10, # Default 100
+                                type="number", value=100, min=10, step=10, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                 html.Div([
@@ -437,26 +434,26 @@ def get_index_callbacks(app):
                         dcc.Input(id={**setting_id_base, 'param': 'learning_rate'},
                                 type="number",
                                 value=0.1,
-                                min=0.0,  # Changed min to 0.0
+                                min=0.0,  
                                 step=0.01,
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                 html.Div([
                     html.Label("Max Depth (max_depth):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "210px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'max_depth'},
-                                type="number", value=6, min=1, step=1, # Default 6
+                                type="number", value=6, min=1, step=1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                 html.Div([
                     html.Label("Min Child Weight (min_child_weight):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "210px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'min_child_weight'},
-                                type="number", value=1, min=0, step=1, # Default 1
+                                type="number", value=1, min=0, step=1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                 html.Div([
                     html.Label("Gamma (min_split_loss):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "210px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'gamma'},
-                                type="number", value=0, min=0, step=0.1, # Default 0
+                                type="number", value=0, min=0, step=0.1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -464,25 +461,25 @@ def get_index_callbacks(app):
                     html.Div([
                     html.Label("Subsample Ratio (subsample):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "210px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'subsample'},
-                                type="number", value=1.0, min=0.1, max=1.0, step=0.05, # Default 1.0 
+                                type="number", value=1.0, min=0.1, max=1.0, step=0.05, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                     html.Div([
                     html.Label("Col Sample by Tree (colsample_bytree):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "210px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'colsample_bytree'},
-                                type="number", value=1.0, min=0.1, max=1.0, step=0.05, # Default 1.0 - 
+                                type="number", value=1.0, min=0.1, max=1.0, step=0.05,  
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                     html.Div([
                     html.Label("Col Sample by Level (colsample_bylevel):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "210px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'colsample_bylevel'},
-                                type="number", value=1.0, min=0.1, max=1.0, step=0.05, # Default 1.0
+                                type="number", value=1.0, min=0.1, max=1.0, step=0.05, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                     html.Div([
                     html.Label("Col Sample by Node (colsample_bynode):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "210px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'colsample_bynode'},
-                                type="number", value=1.0, min=0.1, max=1.0, step=0.05, # Default 1.0
+                                type="number", value=1.0, min=0.1, max=1.0, step=0.05, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -490,13 +487,13 @@ def get_index_callbacks(app):
                     html.Div([
                     html.Label("L1 Reg Alpha (reg_alpha):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "210px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'reg_alpha'},
-                                type="number", value=0, min=0, step=0.1, # Default 0
+                                type="number", value=0, min=0, step=0.1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                     html.Div([
                     html.Label("L2 Reg Lambda (reg_lambda):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "210px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'reg_lambda'},
-                                type="number", value=1, min=0, step=0.1, # Default 1
+                                type="number", value=1, min=0, step=0.1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -590,73 +587,71 @@ def get_index_callbacks(app):
                 ),
             ])
         elif selected_model == "lstm":
-            # Based on LSTMModel in lstm.py
             settings_children.extend([
                 # --- Architecture ---
                 html.Div([
                     html.Label("LSTM Units per Layer (int):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'units'},
-                                type="number", value=64, min=8, step=8, # Default from backend
+                                type="number", value=64, min=8, step=8, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                 html.Div([
                     html.Label("LSTM Activation:", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Dropdown(id={**setting_id_base, 'param': 'activation'},
                                     options=[{'label': act, 'value': act} for act in ['relu', 'tanh', 'sigmoid', 'elu']],
-                                    value='relu', clearable=False, # Default from backend
+                                    value='relu', clearable=False, 
                                     style={'width': '150px', 'display': 'inline-block', 'color': '#333', 'verticalAlign':'middle'})
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                 html.Div([
                         html.Label("Dropout Rate (float 0-1):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                         dcc.Input(id={**setting_id_base, 'param': 'dropout'},
-                                type="number", value=0.0, min=0.0, max=1.0, step=0.05, # Default 0.0 as backend doesn't use it yet
+                                type="number", value=0.0, min=0.0, max=1.0, step=0.05, 
                                 )
                     ], style={'marginBottom':'8px', 'textAlign':'left'}),
                     html.Div([
                         html.Label("Recurrent Dropout (float 0-1):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                         dcc.Input(id={**setting_id_base, 'param': 'recurrent_dropout'},
-                                type="number", value=0.0, min=0.0, max=1.0, step=0.05, # Default 0.0 as backend doesn't use it yet
+                                type="number", value=0.0, min=0.0, max=1.0, step=0.05, 
                                 )
                     ], style={'marginBottom':'8px', 'textAlign':'left'}),
-                    # Note: Adding more layers would require significant backend LSTMModel redesign.
 
                 # --- Compilation / Training ---
                     html.Div([
                     html.Label("Time Steps (Sequence Len):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'time_steps'},
-                                type="number", value=10, min=1, step=1, # Default from backend
+                                type="number", value=10, min=1, step=1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                     html.Div([
                     html.Label("Optimizer:", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
-                    dcc.Dropdown(id={**setting_id_base, 'param': 'optimizer'}, # Use 'optimizer' key like in backend
+                    dcc.Dropdown(id={**setting_id_base, 'param': 'optimizer'}, 
                                     options=[{'label': opt, 'value': opt} for opt in ['adam', 'rmsprop', 'sgd']],
-                                    value='adam', clearable=False, # Default from backend
+                                    value='adam', clearable=False, 
                                     style={'width': '150px', 'display': 'inline-block', 'color': '#333', 'verticalAlign':'middle'})
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                     html.Div([
                     html.Label("Learning Rate (float):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'learning_rate'},
-                                type="number", value=0.001, step=0.0001, # Default from backend
+                                type="number", value=0.001, step=0.0001, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                     html.Div([
                     html.Label("Loss Function:", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Dropdown(id={**setting_id_base, 'param': 'loss'},
                                     options=[{'label': loss, 'value': loss} for loss in ['mse', 'mae']],
-                                    value='mse', clearable=False, # Default from backend
+                                    value='mse', clearable=False, 
                                     style={'width': '150px', 'display': 'inline-block', 'color': '#333', 'verticalAlign':'middle'})
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                 html.Div([
                     html.Label("Training Epochs (int):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'epochs'},
-                                type="number", value=10, min=1, step=1, # Default from backend
+                                type="number", value=10, min=1, step=1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                     html.Div([
                     html.Label("Batch Size (int):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'batch_size'},
-                                type="number", value=256, min=1, step=1, # Default from backend
+                                type="number", value=256, min=1, step=1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
             ])
@@ -667,7 +662,7 @@ def get_index_callbacks(app):
                 html.Div([
                     html.Label("Encoding Dimension (int):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'encoding_dim'},
-                                type="number", value=10, min=2, step=1, # Default 10
+                                type="number", value=10, min=2, step=1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                 html.Div([
@@ -707,13 +702,13 @@ def get_index_callbacks(app):
                     html.Div([
                     html.Label("AE Training Epochs (int):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'epochs'},
-                                type="number", value=10, min=1, step=1, # Default 10
+                                type="number", value=10, min=1, step=1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                     html.Div([
                     html.Label("AE Batch Size (int):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'batch_size'},
-                                type="number", value=32, min=1, step=1, # Default 32
+                                type="number", value=32, min=1, step=1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -731,7 +726,7 @@ def get_index_callbacks(app):
                 html.Div([
                     html.Label("SVM Nu (float 0-1):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'svm_nu'}, 
-                                type="number", value=0.1, min=0.0, max=1.0, step=0.01, # Default 0.1
+                                type="number", value=0.1, min=0.0, max=1.0, step=0.01, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                 # Gamma 
@@ -752,7 +747,7 @@ def get_index_callbacks(app):
                     html.Div([
                     html.Label("SVM Coef0 (float, Poly/Sigmoid):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'coef0'}, # Standard param name
-                                type="number", value=0.0, step=0.1, # Default 0.0
+                                type="number", value=0.0, step=0.1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
                     # Shrinking 
@@ -760,7 +755,7 @@ def get_index_callbacks(app):
                     html.Label("SVM Shrinking Heuristic:", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Dropdown(id={**setting_id_base, 'param': 'shrinking'}, # Standard param name
                                     options=[{'label': 'True', 'value': True}, {'label': 'False', 'value': False}],
-                                    value=True, # Default is True
+                                    value=True, 
                                     clearable=False,
                                     style={'width': '150px', 'display': 'inline-block', 'color': '#333', 'verticalAlign':'middle'})
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
@@ -775,7 +770,7 @@ def get_index_callbacks(app):
                     html.Div([
                     html.Label("SVM Max Iterations (int):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "190px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'max_iter'}, # Standard param name
-                                type="number", placeholder="-1 (no limit)", step=1, min=-1, # Default -1
+                                type="number", placeholder="-1 (no limit)", step=1, min=-1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -786,7 +781,7 @@ def get_index_callbacks(app):
                 html.Div([
                     html.Label("Num Estimators (n_estimators):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'n_estimators'},
-                                type="number", value=100, min=10, step=10, # Default 100
+                                type="number", value=100, min=10, step=10, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -810,7 +805,7 @@ def get_index_callbacks(app):
                 html.Div([
                     html.Label("Max Features (float 0-1):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'max_features'},
-                                type="number", value=1.0, min=0.0, max=1.0, step=0.05, # Float proportion
+                                type="number", value=1.0, min=0.0, max=1.0, step=0.05, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -819,7 +814,7 @@ def get_index_callbacks(app):
                     html.Label("Bootstrap Samples:", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Dropdown(id={**setting_id_base, 'param': 'bootstrap'},
                                     options=[{'label': 'False', 'value': False}, {'label': 'True', 'value': True}],
-                                    value=False, # Default is False
+                                    value=False, 
                                     clearable=False,
                                     style={'width': '150px', 'display': 'inline-block', 'color': '#333', 'verticalAlign':'middle'})
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
@@ -831,8 +826,6 @@ def get_index_callbacks(app):
                                 type="number", placeholder="None", step=1, # Allow None (empty) or int
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
-
-                # Add more settings if needed...
             ])
         elif selected_model == "decision_tree":
             settings_children.extend([
@@ -850,7 +843,7 @@ def get_index_callbacks(app):
                 html.Div([
                     html.Label("Criterion:", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Dropdown(id={**setting_id_base, 'param': 'criterion'},
-                                    options=[{'label': c, 'value': c} for c in ['gini', 'entropy', 'log_loss']], # Added log_loss
+                                    options=[{'label': c, 'value': c} for c in ['gini', 'entropy', 'log_loss']], 
                                     value='gini', clearable=False,
                                     style={'width': '150px', 'display': 'inline-block', 'color': '#333', 'verticalAlign':'middle'})
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
@@ -869,14 +862,14 @@ def get_index_callbacks(app):
                     html.Label("Max Depth (int):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'max_depth'},
                                 type="number", placeholder="None (unlimited)", step=1, min=1, # Ensure positive integer if set
-                                ) # Allow None (empty)
+                                ) 
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
                 # --- Min Samples Split ---
                 html.Div([
                     html.Label("Min Samples Split (int>=2):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'min_samples_split'},
-                                type="number", value=2, min=2, step=1, # Default is 2
+                                type="number", value=2, min=2, step=1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -884,7 +877,7 @@ def get_index_callbacks(app):
                 html.Div([
                     html.Label("Min Samples Leaf (int>=1):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'min_samples_leaf'},
-                                type="number", value=1, min=1, step=1, # Default is 1
+                                type="number", value=1, min=1, step=1, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -892,7 +885,7 @@ def get_index_callbacks(app):
                 html.Div([
                     html.Label("Min Weight Fraction Leaf (float):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'min_weight_fraction_leaf'},
-                                type="number", value=0.0, min=0.0, max=0.5, step=0.01, # Range 0.0 to 0.5
+                                type="number", value=0.0, min=0.0, max=0.5, step=0.01, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -900,13 +893,10 @@ def get_index_callbacks(app):
                 html.Div([
                     html.Label("Max Features:", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Dropdown(id={**setting_id_base, 'param': 'max_features'},
-                                    # Common string options + None (all features)
                                     options=[{'label': mf, 'value': mf} for mf in ['sqrt', 'log2', 'None']],
                                     value='sqrt', # Cannot be none
                                     clearable=False,
                                     style={'width': '150px', 'display': 'inline-block', 'color': '#333', 'verticalAlign':'middle'}),
-                    # Optional: Add a number input if user wants specific int/float?
-                    # dcc.Input(id={**setting_id_base, 'param': 'max_features_num'}, type="number", placeholder="Or int/float", style={'width':'100px', 'marginLeft':'10px'})
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
                     # --- Random State ---
@@ -929,7 +919,7 @@ def get_index_callbacks(app):
                 html.Div([
                     html.Label("Min Impurity Decrease (float):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'min_impurity_decrease'},
-                                type="number", value=0.0, min=0.0, step=0.01, # Default is 0.0
+                                type="number", value=0.0, min=0.0, step=0.01, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -937,7 +927,7 @@ def get_index_callbacks(app):
                 html.Div([
                     html.Label("CCP Alpha (Pruning, float):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'ccp_alpha'},
-                                type="number", value=0.0, min=0.0, step=0.01, # Default is 0.0
+                                type="number", value=0.0, min=0.0, step=0.01, 
                                 )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
@@ -1096,7 +1086,7 @@ def get_index_callbacks(app):
                     dcc.Checklist(
                         id={**setting_id_base, 'param': 'early_stopping'},
                         options=[{'label': '', 'value': 'true'}],
-                        value=[], # Default is False
+                        value=[], 
                         style={'display': 'inline-block', 'verticalAlign': 'middle'}
                     ),
                 ], style={'marginBottom': '8px', 'textAlign': 'left'}),
@@ -1136,7 +1126,7 @@ def get_index_callbacks(app):
                     dcc.Checklist(
                         id={**setting_id_base, 'param': 'calibrate_probabilities'},
                         options=[{'label': '(for hinge/sq_hinge loss)', 'value': 'true'}],
-                        value=['true'], # Default is True in the model
+                        value=['true'], 
                         style={'display': 'inline-block', 'verticalAlign': 'middle'}
                     ),
                 ], style={'marginBottom': '8px', 'textAlign': 'left'}),
@@ -1208,7 +1198,7 @@ def get_index_callbacks(app):
                     )
                 ], style={'marginBottom':'8px', 'textAlign':'left'}),
 
-                # Parameters for RandomizedSearchCV (conditional display can be handled in callback based on auto_tune)
+                # Parameters for RandomizedSearchCV 
                 html.Div([
                     html.Label("Search n_iter (AutoTune):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px", "display": "inline-block", "width": "180px"}),
                     dcc.Input(id={**setting_id_base, 'param': 'search_n_iter'}, type="number", value=10, min=1, step=1,
@@ -1231,10 +1221,10 @@ def get_index_callbacks(app):
                 id={**setting_id_base,}
                 ),
             ])
-        # Add elif blocks for other models (LSTM, SVM, Isolation Forest, Decision Tree)
+        # Add elif blocks for other models 
 
         # If the selected model doesn't have specific settings defined here, hide the panel
-        if len(settings_children) == 1: # Only contains the H5 title
+        if len(settings_children) == 1: 
             return [], {"display": "none"}
 
         return settings_children, panel_style
@@ -1309,7 +1299,7 @@ def get_index_callbacks(app):
         all_settings_children = []
         handler = get_handler() # Get handler once if needed for multiple methods
 
-        # Fetch columns once if needed by multiple XAI methods (like DiCE)
+        # Fetch columns once if needed by multiple XAI methods 
         column_options = []
         if selected_dataset:
             try:
@@ -1403,13 +1393,12 @@ def get_index_callbacks(app):
                         dcc.Dropdown(
                             id={'type': 'xai-setting', 'method': 'DiceExplainer', 'param': 'features_to_vary'},
                             options=column_options, # Use pre-fetched options
-                            value=[], # Default to empty list (vary all mutable by default in DiCE)
+                            value=[], # Default to empty list 
                             multi=True,
                             placeholder="Select features (leave empty to vary all mutable)",
                             style={'width': '90%', 'maxWidth':'500px', 'display': 'inline-block', 'color': '#333', 'verticalAlign':'middle'}
                         )
                     ], style={'marginBottom':'8px'}),
-                    # Other DiCE settings
                     html.Div([
                         html.Label("Backend (ML model framework):", style={"fontSize": "16px", "color": "#e0e0e0", "marginRight":"5px"}),
                         dcc.Dropdown(id={'type': 'xai-setting', 'method': 'DiceExplainer', 'param': 'backend'}, options=[{'label': 'SciKit-Learn', 'value': 'sklearn'},{'label': 'Tensorflow 1', 'value': 'TF1'},{'label': 'Tensorflow 2', 'value': 'TF2'},{'label': 'PyTorch', 'value': 'pytorch'}], value='sklearn', clearable=False, style={'width': '150px', 'display': 'inline-block', 'color': '#333'})
@@ -1420,7 +1409,6 @@ def get_index_callbacks(app):
                     ], style={'marginBottom':'8px'})
                 ]
                 method_settings.extend(dice_specific_settings)
-            # Add elif for other methods...
 
             all_settings_children.extend(method_settings)
 
@@ -1443,21 +1431,18 @@ def get_index_callbacks(app):
     )
     def toggle_active_jobs_section(children):
         # Show the active jobs section unless the content indicates no jobs
-        # Need to be careful about comparing component structures vs simple strings
         no_jobs_message = "No active jobs found."
         display_style = {"display": "block", "marginTop": "30px"}
         hide_style = {"display": "none"}
 
         if isinstance(children, list) and len(children) > 0:
-            # Check if the first child is a Div containing the no_jobs_message
-            # This depends on how create_active_jobs returns the message now
             first_child = children[0]
             if isinstance(first_child, html.Div) and getattr(first_child, 'children', None) == no_jobs_message:
                 return hide_style
             else:
                 return display_style # Assume list contains job divs
         elif isinstance(children, str) and children == no_jobs_message:
-            return hide_style # Direct string comparison
+            return hide_style 
         elif children: # If children exist and are not the 'no jobs' message
             return display_style
         else: # If children are None or empty list
@@ -1476,7 +1461,6 @@ def get_index_callbacks(app):
     # --- Callback to manage active jobs list ---
     @callback(
         Output("active-jobs-list", "children"),
-        # Output("active-jobs-error-message", "children"), # Keep commented unless added
         Input("job-interval", "n_intervals"),
         Input({"type": "confirm-box", "index": ALL}, "submit_n_clicks"), # Listen to confirmation clicks
         State("active-jobs-json", "data") # Store previous state as JSON
@@ -1489,7 +1473,7 @@ def get_index_callbacks(app):
         """
         ctx = callback_context
         triggered_id = ctx.triggered_id
-        print(f"manage_and_remove_active_jobs triggered by: {triggered_id}") # Log trigger
+        #print(f"manage_and_remove_active_jobs triggered by: {triggered_id}") # Log trigger
 
         handler = get_handler()
         error_message = None # Initialize error message
@@ -1501,7 +1485,6 @@ def get_index_callbacks(app):
             button_index = -1
             for i, n_clicks in enumerate(submit_n_clicks_list):
                 # Check if this specific confirmation box was clicked (n_clicks > 0)
-                # This logic assumes submit_n_clicks resets;
                 if n_clicks and n_clicks > 0:
                     # Extract the job name from the ID of the confirmation box that triggered
                     all_confirm_ids = ctx.inputs_list[1] # Get list of Input dicts for confirm-box
@@ -1523,30 +1506,28 @@ def get_index_callbacks(app):
 
         # --- Fetch and Update Active Jobs List ---
         try:
-            print("Fetching active jobs from backend...")
+            #print("Fetching active jobs from backend...")
             raw_response = handler.handle_get_running()
 
             if not raw_response: raise ValueError("Received empty response from handle_get_running.")
 
             active_jobs_data = json.loads(raw_response)
-            print(f"Parsed active_jobs_data: {active_jobs_data}") # Log parsed data
+            #print(f"Parsed active_jobs_data: {active_jobs_data}") # Log parsed data
 
             if not isinstance(active_jobs_data, dict) or 'running' not in active_jobs_data: raise TypeError("Invalid data structure received. Expected {'running': [...]}")
             if not isinstance(active_jobs_data['running'], list): raise TypeError("Invalid data structure: 'running' key is not a list.")
             active_jobs_list = active_jobs_data["running"]
-            print(f"Extracted active_jobs_list: {active_jobs_list}") # Log the final list
+            #print(f"Extracted active_jobs_list: {active_jobs_list}") # Log the final list
 
             # --- Compare with previous state ---
             current_jobs_json = json.dumps(active_jobs_list, sort_keys=True) # Sort keys for consistent comparison
             prev_jobs_json_state = active_jobs_json_state if active_jobs_json_state else json.dumps([]) # Handle initial None state
-            # Re-parse prev_jobs_json_state for comparison consistency if needed, or compare strings directly
-            # For simplicity, compare JSON strings directly
             if current_jobs_json == prev_jobs_json_state and triggered_id == "job-interval":
                 print("Job list hasn't changed. Returning no_update.")
                 return no_update
 
             # --- Generate new layout component ---
-            print("Job list changed or cancellation may have occurred. Updating display.")
+            #print("Job list changed or cancellation may have occurred. Updating display.")
             new_children_component = create_active_jobs(active_jobs_list) # Gets the single Div
 
             # --- Wrap the single component in a list for the Output ---
@@ -1640,11 +1621,9 @@ def get_index_callbacks(app):
             elif any(c.isupper() for c in job_name):
                 error_msg = "Job name cannot contain uppercase letters."
             else:
-                # This more general message covers other invalid characters if your regex is stricter
                 error_msg = "Job name must start with a lowercase letter or underscore, and contain only lowercase letters, numbers, or underscores."
         # --- End of new validation ---
         else:
-            # Assuming handler.check_name is defined and checks for existing job names
             response = handler.check_name(job_name) 
             if response != "success":
                 error_msg = "Job name already exists!"
@@ -1667,7 +1646,6 @@ def get_index_callbacks(app):
         if "use_injection" in inj_check:
             if not selected_injection_method or selected_injection_method == "None": error_msg = "Please select an injection method."
             elif not timestamp: error_msg = "Please enter an injection timestamp."
-            # Add more validation for magnitude, percentage, duration, columns if needed
 
             if error_msg:
                 style_copy.update({"backgroundColor": "#e74c3c", "display": "block"})
@@ -1741,20 +1719,17 @@ def get_index_callbacks(app):
                     actual_value = value
                     param_name = id_dict['param']
                     
-                    # Basic type conversion or validation could happen here if needed
-                    # e.g., convert 'None' string placeholder for max_depth to None
                     if selected_detection_model == 'decision_tree':
                         if param_name == 'max_depth' and value is None:
                             actual_value = None
                         elif param_name == 'shuffle_kfold' and isinstance(value, list): # For the wrapper
                             actual_value = 'true' in value
-                    # e.g., handle 'auto' or float for contamination/max_samples
                     elif selected_detection_model == 'isolation_forest' and param_name in ['contamination', 'max_samples'] and isinstance(value, str) and value.lower() != 'auto':
                         try:
                             actual_value = float(value)
                         except ValueError:
                             print(f"Warning: Invalid float value '{value}' for {param_name}. Using default.")
-                            actual_value = 'auto' # Or keep the string, depending on backend expectation
+                            actual_value = 'auto' 
                     elif selected_detection_model == 'SGDClassifier':
                         if param_name == 'shuffle_kfold' and isinstance(value, list): # For the wrapper
                             actual_value = 'true' in value
@@ -1780,14 +1755,14 @@ def get_index_callbacks(app):
         # --- Call Backend Handler ---
 
         try:
-            print(f"Sending job '{job_name}' with mode '{selected_mode}'...")
-            print(f"  Dataset: {selected_dataset}, Model: {selected_detection_model}")
-            print(f"  Label Column: {label_col_to_pass}")
-            print(f"  Time Column: {selected_time_col if selected_time_col != None else 'None'}")
-            print(f"  XAI Params: {xai_settings}")
-            print(f"  Injection Params: {inj_params_list}")
-            print(f"  ML Model Params: {ml_params_dict}") # Print new params
-            sys.stdout.flush()
+            #print(f"Sending job '{job_name}' with mode '{selected_mode}'...")
+            #print(f"  Dataset: {selected_dataset}, Model: {selected_detection_model}")
+            #print(f"  Label Column: {label_col_to_pass}")
+            #print(f"  Time Column: {selected_time_col if selected_time_col != None else 'None'}")
+            #print(f"  XAI Params: {xai_settings}")
+            #print(f"  Injection Params: {inj_params_list}")
+            #print(f"  ML Model Params: {ml_params_dict}") # Print new params
+            #sys.stdout.flush()
 
             # --- Modify backend call signatures to include ml_params_dict ---
             model_params_to_pass = ml_params_dict if ml_params_dict else None # Pass None if empty
