@@ -19,6 +19,7 @@ def process_and_plot_shap(
     class_index_to_plot: int = 0,      # Default class to plot for classification
     max_display_features: int = 20,
     job_name='none',
+    **kwargs
 ):
     """
     Processes SHAP results and generates standard static plots (.png)
