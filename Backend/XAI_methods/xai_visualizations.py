@@ -144,7 +144,7 @@ def process_and_plot_shap(
 
     # --- Waterfall Plot (First Instance) ---
     if shap_explanation and expected_value_for_plot is not None and n_instances_explained > 0:
-        instance_idx_to_plot = 0
+        instance_idx_to_plot = 1
         try:
             plt.figure()
             # shap.plots.waterfall needs a single instance from the Explanation object
@@ -172,7 +172,7 @@ def process_and_plot_shap(
 
     # --- Interactive Force Plot (First Instance) ---
     if shap_explanation and expected_value_for_plot is not None and n_instances_explained > 0:
-        instance_idx_to_plot = 0
+        instance_idx_to_plot = 1
         try:
             # shap.plots.force for a single instance from the Explanation object
             # This returns an AdditiveForceVisualizer object

@@ -319,7 +319,7 @@ def layout(handler):
                                     )
                                 ], style={"marginTop": "15px"}),
                                 html.Div([
-                            html.Label("Select Time for Timestamp (seconds since epoch):", style={"fontSize": "18px", "color": "#ffffff"}),
+                            html.Label("Select Time for Timestamp (seconds since data start):", style={"fontSize": "18px", "color": "#ffffff"}),
                             dcc.Input(
                                 id="timestamp-input",
                                 type="number",
