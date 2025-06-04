@@ -1199,51 +1199,52 @@ def register_job_page_callbacks(app):
                         *method_file_components # Unpack the list of components
                     ], className="xai-method-block", style={'marginBottom': '30px', 'padding': '15px', 'border': '1px solid #555', 'borderRadius':'5px', 'backgroundColor': 'rgba(40,40,40,0.5)'})) # Style the block
 
+            # --- Does not work correctly! Needs fixing in the backend i think. ---
             # --- Aggregated Feature Importance Comparison Plot ---
-            aggregated_fi_path = os.path.join(job_xai_base_path, "aggregated_feature_importances.json")
-            print(f"(XAI Display CB) Checking for aggregated FI summary: {aggregated_fi_path}")
+            # aggregated_fi_path = os.path.join(job_xai_base_path, "aggregated_feature_importances.json")
+            # print(f"(XAI Display CB) Checking for aggregated FI summary: {aggregated_fi_path}")
 
-            if os.path.exists(aggregated_fi_path):
-                try:
-                    with open(aggregated_fi_path, 'r') as f:
-                        aggregated_scores_data = json.load(f)
+            # if os.path.exists(aggregated_fi_path):
+            #     try:
+            #         with open(aggregated_fi_path, 'r') as f:
+            #             aggregated_scores_data = json.load(f)
                     
-                    if aggregated_scores_data:
-                        print("(XAI Display CB) Found aggregated_scores_data. Attempting to plot comparison.")
-                        comparison_plot_filename = f"{job_name}_feature_importance_comparison.html"
+            #         if aggregated_scores_data:
+            #             print("(XAI Display CB) Found aggregated_scores_data. Attempting to plot comparison.")
+            #             comparison_plot_filename = f"{job_name}_feature_importance_comparison.html"
                         
-                        # Call the plotting function (it saves the file)
-                        plot_aggregated_feature_importance_comparison(
-                            aggregated_scores_data,
-                            output_dir=job_xai_base_path, 
-                            job_name=job_name
-                        )
+            #             # Call the plotting function (it saves the file)
+            #             plot_aggregated_feature_importance_comparison(
+            #                 aggregated_scores_data,
+            #                 output_dir=job_xai_base_path, 
+            #                 job_name=job_name
+            #             )
                         
-                        comparison_plot_asset_url = f"/xai-assets/{urllib.parse.quote(job_name)}/{urllib.parse.quote(comparison_plot_filename)}"
-                        expected_comparison_plot_path = os.path.join(job_xai_base_path, comparison_plot_filename)
+            #             comparison_plot_asset_url = f"/xai-assets/{urllib.parse.quote(job_name)}/{urllib.parse.quote(comparison_plot_filename)}"
+            #             expected_comparison_plot_path = os.path.join(job_xai_base_path, comparison_plot_filename)
 
-                        if os.path.exists(expected_comparison_plot_path):
-                            print(f"(XAI Display CB) Comparison plot HTML exists at: {expected_comparison_plot_path}")
-                            comparison_plot_component = html.Div([
-                                html.H4("Aggregated Feature Importance Comparison", style={'borderBottom': '1px solid #555', 'paddingBottom': '5px', 'marginTop': '30px', 'marginBottom': '15px', 'color':'#eee'}),
-                                html.Iframe(
-                                    src=comparison_plot_asset_url,
-                                    style={'width': '100%', 'height': '700px', 'border': '1px solid #444', 'backgroundColor': 'rgba(40,40,40,0.5)'}
-                                )
-                            ], style={'marginTop': '20px', 'marginBottom': '20px', 'padding': '15px', 'border': '1px solid #555', 'borderRadius':'5px', 'backgroundColor': 'rgba(40,40,40,0.5)'})
-                            xai_content_blocks.append(comparison_plot_component)
-                            # found_any_results = True # No longer solely rely on found_any_results
-                        else:
-                            print(f"(XAI Display CB) Comparison plot HTML NOT found at {expected_comparison_plot_path} after calling plot function.")
-                            # xai_content_blocks.append(html.P("Failed to generate comparison plot.", style={'color':'orange'}))
-                    else:
-                        print("(XAI Display CB) aggregated_scores_data loaded but was empty.")
-                except Exception as e:
-                    print(f"(XAI Display CB) Error loading or plotting aggregated feature importances: {e}")
-                    traceback.print_exc()
-                    xai_content_blocks.append(html.P(f"Error displaying aggregated feature importance comparison: {e}", style={'color':'red'}))
-            else:
-                print(f"(XAI Display CB) Aggregated feature importance file not found: {aggregated_fi_path}")
+            #             if os.path.exists(expected_comparison_plot_path):
+            #                 print(f"(XAI Display CB) Comparison plot HTML exists at: {expected_comparison_plot_path}")
+            #                 comparison_plot_component = html.Div([
+            #                     html.H4("Aggregated Feature Importance Comparison", style={'borderBottom': '1px solid #555', 'paddingBottom': '5px', 'marginTop': '30px', 'marginBottom': '15px', 'color':'#eee'}),
+            #                     html.Iframe(
+            #                         src=comparison_plot_asset_url,
+            #                         style={'width': '100%', 'height': '700px', 'border': '1px solid #444', 'backgroundColor': 'rgba(40,40,40,0.5)'}
+            #                     )
+            #                 ], style={'marginTop': '20px', 'marginBottom': '20px', 'padding': '15px', 'border': '1px solid #555', 'borderRadius':'5px', 'backgroundColor': 'rgba(40,40,40,0.5)'})
+            #                 xai_content_blocks.append(comparison_plot_component)
+            #                 # found_any_results = True # No longer solely rely on found_any_results
+            #             else:
+            #                 print(f"(XAI Display CB) Comparison plot HTML NOT found at {expected_comparison_plot_path} after calling plot function.")
+            #                 # xai_content_blocks.append(html.P("Failed to generate comparison plot.", style={'color':'orange'}))
+            #         else:
+            #             print("(XAI Display CB) aggregated_scores_data loaded but was empty.")
+            #     except Exception as e:
+            #         print(f"(XAI Display CB) Error loading or plotting aggregated feature importances: {e}")
+            #         traceback.print_exc()
+            #         xai_content_blocks.append(html.P(f"Error displaying aggregated feature importance comparison: {e}", style={'color':'red'}))
+            # else:
+            #     print(f"(XAI Display CB) Aggregated feature importance file not found: {aggregated_fi_path}")
 
             # --- Final Return based on xai_content_blocks ---
             if xai_content_blocks: # If any content (method files, error messages, or aggregated plot) was added
