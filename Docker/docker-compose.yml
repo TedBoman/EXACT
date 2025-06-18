@@ -13,7 +13,6 @@ services:
     restart: always
 
   dash-frontend:
-    runtime: nvidia
     build:
       context: ../
       dockerfile: ./Frontend/Dockerfile
