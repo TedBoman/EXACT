@@ -76,7 +76,7 @@ The system includes a set of pre-defined anomaly detection algorithms, XAI metho
     FRONTEND_PORT=8050
     BACKEND_PORT=9524
     BACKEND_HOST=0.0.0.0
-    XAI_PLOT_OUTPUT_PATH=C:\Users\tedbo\Documents\XAI_plots
+    XAI_PLOT_OUTPUT_PATH=./xai_outputs # Path accessible by backend and frontend containers for XAI plots
     ```
     *Note: `XAI_PLOT_OUTPUT_PATH` should be a path that can be volume-mounted into both the backend and frontend containers. The example `./xai_outputs` implies it's relative to where `docker-compose` is run and will be created on the host.*
 8.  Run the following command from the `Docker` directory to build and start the Docker containers:
