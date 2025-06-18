@@ -51,7 +51,7 @@ The system includes a set of pre-defined anomaly detection algorithms, XAI metho
     ```sh
     cd Docker
     ```
-5.  Create a `.env` file in the `Docker` directory (you can copy `env.example` if provided, or create it manually).
+5.  Create a `.env` file in the `Docker` directory.
 6.  Set up the following environment variables in the `.env` file:
     ```env
     DATABASE_USER=your_db_user
