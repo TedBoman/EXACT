@@ -65,11 +65,25 @@ The system includes a set of pre-defined anomaly detection algorithms, XAI metho
     XAI_PLOT_OUTPUT_PATH=./xai_outputs # Path accessible by backend and frontend containers for XAI plots
     ```
     *Note: `XAI_PLOT_OUTPUT_PATH` should be a path that can be volume-mounted into both the backend and frontend containers. The example `./xai_outputs` implies it's relative to where `docker-compose` is run and will be created on the host.*
-7.  Run the following command from the `Docker` directory to build and start the Docker containers:
+
+    Or use this preconfigured .env file, just provide it with a path to an output folder:
+    ```env
+    DATABASE_USER=EXACT
+    DATABASE_PASSWORD=EXACT
+    DATABASE_NAME=EXACTDB
+    DATABASE_HOST=host.docker.internal
+    DATABASE_PORT=5432
+    FRONTEND_PORT=8050
+    BACKEND_PORT=9524
+    BACKEND_HOST=0.0.0.0
+    XAI_PLOT_OUTPUT_PATH=C:\Users\tedbo\Documents\XAI_plots
+    ```
+    *Note: `XAI_PLOT_OUTPUT_PATH` should be a path that can be volume-mounted into both the backend and frontend containers. The example `./xai_outputs` implies it's relative to where `docker-compose` is run and will be created on the host.*
+8.  Run the following command from the `Docker` directory to build and start the Docker containers:
     ```sh
     docker-compose up -d --build
     ```
-8.  Your system should now be built and running. The frontend will typically be accessible at `http://localhost:YOUR_FRONTEND_PORT`.
+9.  Your system should now be built and running. The frontend will typically be accessible at `http://localhost:YOUR_FRONTEND_PORT`.
 
 ### Additional Commands
 
