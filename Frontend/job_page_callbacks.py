@@ -915,7 +915,7 @@ def register_job_page_callbacks(app):
 
         if stored_data_json is None:
             print("(Graph Update CB) No data in store for graph.")
-            fig.update_layout(title=f'No Data Available for {job_title_name}. Waiting for data...',
+            fig.update_layout(title=f'Dataset for job: {job_title_name} is too large for Plotly.',
                             xaxis={'visible': False}, yaxis={'visible': False})
             return fig
 
