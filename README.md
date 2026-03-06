@@ -109,19 +109,19 @@ The system includes a set of pre-defined anomaly detection algorithms, XAI metho
 
 ## 🛠️ Tools And Frameworks
 
-* **Python (3.10):** The core language for the entire stack.
-* **Docker:** For containerization of application components.
-* **Dash by Plotly:** Python framework for building the interactive web application frontend.
-* **TimescaleDB:** Open-source time-series SQL database, built on PostgreSQL, for storing telemetry and job data.
-* **Pandas:** For data manipulation and analysis.
-* **NumPy:** For numerical operations.
-* **Scikit-learn:** For machine learning utilities and some models.
-* **XGBoost:** Gradient boosting library used for one of the ML models.
-* **TensorFlow/Keras:** Deep learning library used for LSTM model.
-* **SHAP (SHapley Additive exPlanations):** Library for calculating SHAP values for model explainability.
-* **LIME (Local Interpretable Model-agnostic Explanations):** Library for generating local model explanations.
-* **DiCE (Diverse Counterfactual Explanations):** Library for generating counterfactual explanations.
-* **Psycopg2:** PostgreSQL adapter for Python to interact with TimescaleDB.
+* **Python [3.10]:** The core language for the entire stack.
+* **Docker [27.5.1]:** For containerization of application components.
+* **Dash by Plotly [3.0.1]:** Python framework for building the interactive web application frontend.
+* **TimescaleDB [2.18.1]:** Open-source time-series SQL database, built on PostgreSQL, for storing telemetry and job data.
+* **Pandas [1.5.3]:** For data manipulation and analysis.
+* **NumPy [1.25.2]:** For numerical operations.
+* **Scikit-learn [1.6.1]:** For machine learning utilities and some models.
+* **XGBoost [3.0.0]:** Gradient boosting library used for one of the ML models.
+* **TensorFlow/Keras [2.18.0]:** Deep learning library used for LSTM model.
+* **SHAP (SHapley Additive exPlanations) [0.47.2]:** Library for calculating SHAP values for model explainability.
+* **LIME (Local Interpretable Model-agnostic Explanations) [0.2.0.1]:** Library for generating local model explanations.
+* **DiCE (Diverse Counterfactual Explanations) [0.11]:** Library for generating counterfactual explanations.
+* **Psycopg2 [2.9.6]** PostgreSQL adapter for Python to interact with TimescaleDB.
 
 ## 📚 Guide
 
@@ -487,4 +487,5 @@ EXACT builds upon the foundational work of the AnomDet tool. We would like to ac
 * [MaxStrang](https://github.com/MaxStrang) - AnomDet
 * [valens-twiringiyimana](https://github.com/valens-twiringiyimana) - AnomDet
 * [Seemihh](https://github.com/Seemihh) - AnomDet
+
 
