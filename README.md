@@ -109,7 +109,7 @@ The system includes a set of pre-defined anomaly detection algorithms, XAI metho
 
 ## 🛠️ Tools And Frameworks
 
-* **Python:** The core language for the entire stack.
+* **Python (3.10):** The core language for the entire stack.
 * **Docker:** For containerization of application components.
 * **Dash by Plotly:** Python framework for building the interactive web application frontend.
 * **TimescaleDB:** Open-source time-series SQL database, built on PostgreSQL, for storing telemetry and job data.
@@ -487,3 +487,4 @@ EXACT builds upon the foundational work of the AnomDet tool. We would like to ac
 * [MaxStrang](https://github.com/MaxStrang) - AnomDet
 * [valens-twiringiyimana](https://github.com/valens-twiringiyimana) - AnomDet
 * [Seemihh](https://github.com/Seemihh) - AnomDet
+
