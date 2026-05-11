@@ -488,4 +488,18 @@ EXACT builds upon the foundational work of the AnomDet tool. We would like to ac
 * [valens-twiringiyimana](https://github.com/valens-twiringiyimana) - AnomDet
 * [Seemihh](https://github.com/Seemihh) - AnomDet
 
+## Citation
+
+The IEEE Access paper for EXACT can be cited as follows:
+
+```bibtex
+@article{Boman2026EXACT,
+  author  = {Ted Boman and Theo Gould and Shahriar Hasan and Mir Riyanul Islam and Per Strandberg and Tiberiu Seceleanu},
+  title   = {EXACT: An Explainable Anomaly Classification Tool},
+  journal = {IEEE Access},
+  year    = {2026},
+  volume  = {14},
+  pages   = {60713--60739},
+  doi     = {10.1109/ACCESS.2026.3685155}
+}
 
